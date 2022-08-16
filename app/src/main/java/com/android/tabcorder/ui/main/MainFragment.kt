@@ -1,20 +1,13 @@
 package com.android.tabcorder.ui.main
 
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.android.tabcorder.base.BaseFragment
 import com.android.tabcorder.databinding.FragmentMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::inflate) {
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
-    override fun initView() {
-        super.initView()
-
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-    }
-
-    companion object {
-        fun newInstance() = MainFragment()
-    }
 }

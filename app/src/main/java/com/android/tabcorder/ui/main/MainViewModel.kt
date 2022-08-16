@@ -1,7 +1,9 @@
 package com.android.tabcorder.ui.main
 
 import androidx.lifecycle.ViewModel
-import com.android.tabcorder.base.BaseVIewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel : BaseVIewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor() : ViewModel() {
 }

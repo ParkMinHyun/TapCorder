@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.res.Resources
 import android.widget.Toast
 import com.android.tabcorder.util.ActivityLifeCycleCallback
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class App : Application() {
 
     init {
