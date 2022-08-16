@@ -1,14 +1,17 @@
 package com.android.tapcorder.ui.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.tapcorder.App
 import com.android.tapcorder.base.BaseFragment
 import com.android.tapcorder.databinding.FragmentMainBinding
+import com.android.tapcorder.service.TapcorderService
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
+import com.android.tapcorder.util.Actions
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -46,6 +49,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             SettingDialogFragment().apply {
                 setSettingCallback(object : SettingDialogFragment.SettingCallback{
                     override fun onStarted() {
+                        startTapcorderService()
                         App.showToast("onStarted")
                     }
 
@@ -84,6 +88,13 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         viewBinding.recyclerview.adapter = audioRVAdapter
         viewBinding.recyclerview.layoutManager = LinearLayoutManager(App.getContext()).apply {
             orientation = LinearLayoutManager.VERTICAL
+        }
+    }
+
+    private fun startTapcorderService() {
+        Intent(activity, TapcorderService::class.java).also {
+            it.action = Actions.START
+            activity?.startForegroundService(it)
         }
     }
 
