@@ -1,4 +1,4 @@
-package com.android.tabcorder.ui.audio
+package com.android.tapcorder.ui.audio
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.android.tabcorder.R
-import com.android.tabcorder.util.FileUtil
+import com.android.tapcorder.R
+import com.android.tapcorder.util.FileUtil
 import java.io.File
 import java.lang.String.valueOf
 

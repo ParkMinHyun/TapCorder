@@ -1,4 +1,4 @@
-package com.android.tabcorder
+package com.android.tapcorder
 
 import org.junit.Test
 

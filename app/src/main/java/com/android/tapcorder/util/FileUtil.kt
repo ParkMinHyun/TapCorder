@@ -1,8 +1,8 @@
-package com.android.tabcorder.util
+package com.android.tapcorder.util
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import com.android.tabcorder.App
+import com.android.tapcorder.App
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*

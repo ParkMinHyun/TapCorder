@@ -1,10 +1,10 @@
-package com.android.tabcorder.util
+package com.android.tapcorder.util
 
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.android.tabcorder.App
+import com.android.tapcorder.App
 
 object PermissionUtil {
 

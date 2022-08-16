@@ -1,4 +1,4 @@
-package com.android.tabcorder
+package com.android.tapcorder
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.widget.Toast
-import com.android.tabcorder.util.ActivityLifeCycleCallback
+import com.android.tapcorder.util.ActivityLifeCycleCallback
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

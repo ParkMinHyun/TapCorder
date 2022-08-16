@@ -1,10 +1,10 @@
-package com.android.tabcorder
+package com.android.tapcorder
 
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.android.tabcorder.ui.main.MainFragment
-import com.android.tabcorder.util.PermissionUtil
+import com.android.tapcorder.ui.main.MainFragment
+import com.android.tapcorder.util.PermissionUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

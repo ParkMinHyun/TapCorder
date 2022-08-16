@@ -1,4 +1,4 @@
-package com.android.tabcorder.util
+package com.android.tapcorder.util
 
 import android.app.Activity
 import android.app.Application

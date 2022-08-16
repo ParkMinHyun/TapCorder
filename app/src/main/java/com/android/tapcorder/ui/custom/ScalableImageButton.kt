@@ -1,4 +1,4 @@
-package com.android.tabcorder.ui.custom
+package com.android.tapcorder.ui.custom
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -14,8 +14,8 @@ import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.ScaleAnimation
 import androidx.appcompat.widget.AppCompatImageView
-import com.android.tabcorder.R
-import com.android.tabcorder.util.ExtensionUtil.TAG
+import com.android.tapcorder.R
+import com.android.tapcorder.util.ExtensionUtil.TAG
 
 private const val FAST_DURATION_MILLI = 60
 private const val TOUCH_EXTRA_AREA_RATIO = 0.2

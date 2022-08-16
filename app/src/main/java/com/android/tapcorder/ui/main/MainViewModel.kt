@@ -1,4 +1,4 @@
-package com.android.tabcorder.ui.main
+package com.android.tapcorder.ui.main
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
@@ -6,7 +6,7 @@ import android.media.MediaRecorder
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.android.tabcorder.util.FileUtil
+import com.android.tapcorder.util.FileUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
 import java.io.IOException

@@ -1,4 +1,4 @@
-package com.android.tabcorder.base
+package com.android.tapcorder.base
 
 import android.os.Bundle
 import android.view.LayoutInflater

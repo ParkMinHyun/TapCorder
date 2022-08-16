@@ -1,14 +1,14 @@
-package com.android.tabcorder.ui.main
+package com.android.tapcorder.ui.main
 
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.tabcorder.App
-import com.android.tabcorder.base.BaseFragment
-import com.android.tabcorder.databinding.FragmentMainBinding
-import com.android.tabcorder.ui.audio.AudioRVAdapter
-import com.android.tabcorder.ui.setting.SettingDialogFragment
+import com.android.tapcorder.App
+import com.android.tapcorder.base.BaseFragment
+import com.android.tapcorder.databinding.FragmentMainBinding
+import com.android.tapcorder.ui.audio.AudioRVAdapter
+import com.android.tapcorder.ui.setting.SettingDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 

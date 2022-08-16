@@ -1,12 +1,12 @@
-package com.android.tabcorder.ui.setting
+package com.android.tapcorder.ui.setting
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.tabcorder.R
-import com.android.tabcorder.databinding.FragmentSettingBinding
-import com.android.tabcorder.repository.SettingRepository
+import com.android.tapcorder.R
+import com.android.tapcorder.databinding.FragmentSettingBinding
+import com.android.tapcorder.repository.SettingRepository
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SettingDialogFragment : BottomSheetDialogFragment() {

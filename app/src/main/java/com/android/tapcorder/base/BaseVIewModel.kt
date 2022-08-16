@@ -1,4 +1,4 @@
-package com.android.tabcorder.base
+package com.android.tapcorder.base
 
 import androidx.lifecycle.ViewModel
 
