@@ -1,7 +1,6 @@
 package com.android.tabcorder.base
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +22,6 @@ abstract class BaseFragment<VB : ViewBinding>(
         savedInstanceState: Bundle?
     ): View? {
         _viewBinding = inflate.invoke(inflater, container, false)
-
-        Log.e("TabCorder", "onCreateView")
         initView()
         return viewBinding.root
     }
@@ -32,7 +29,6 @@ abstract class BaseFragment<VB : ViewBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpViews()
-        Log.e("TabCorder", "onViewCreated")
     }
 
     open fun initView() {

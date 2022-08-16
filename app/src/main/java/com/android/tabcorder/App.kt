@@ -1,8 +1,10 @@
 package com.android.tabcorder
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.widget.Toast
 import com.android.tabcorder.util.ActivityLifeCycleCallback
 import dagger.hilt.android.HiltAndroidApp
@@ -34,6 +36,9 @@ class App : Application() {
         fun getContext(): Context = instance.applicationContext
 
         fun getResources(): Resources = instance.applicationContext.resources
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        fun getDrawableImage(id: Int): Drawable = getResources().getDrawable(id, null)
 
         fun getCurrentActivity() = instance.activityLifeCycleCallbacks.currentActivity
 
