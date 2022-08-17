@@ -12,15 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/app_color"
-        android:gravity="center"
+        android:gravity="left"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="MissingConstraints">
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:layout_width="140dp"
-            android:layout_height="30dp"
-            android:background="@drawable/logo_header"
+            android:layout_height="50dp"
+            android:background="@drawable/logo"
             tools:ignore="MissingConstraints" />
     </LinearLayout>
 
