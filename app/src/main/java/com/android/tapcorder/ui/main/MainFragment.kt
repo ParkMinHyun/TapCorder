@@ -11,7 +11,7 @@ import com.android.tapcorder.databinding.FragmentMainBinding
 import com.android.tapcorder.service.TapcorderService
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
-import com.android.tapcorder.util.Actions
+import com.android.tapcorder.notification.NotificationAction
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -93,7 +93,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     private fun startTapcorderService() {
         Intent(activity, TapcorderService::class.java).also {
-            it.action = Actions.START
+            it.action = NotificationAction.START
             activity?.startForegroundService(it)
         }
     }

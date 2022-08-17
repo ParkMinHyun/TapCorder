@@ -1,6 +1,6 @@
-package com.android.tapcorder.util
+package com.android.tapcorder.notification
 
-object Actions {
+object NotificationAction {
     const val MAIN = "main"
     const val START = "start"
     const val STOP = "stop"

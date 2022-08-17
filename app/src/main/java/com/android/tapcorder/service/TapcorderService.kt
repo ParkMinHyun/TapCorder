@@ -6,10 +6,10 @@ import android.os.IBinder
 import android.util.Log
 import com.android.tapcorder.App
 import com.android.tapcorder.device.AudioRecorder
+import com.android.tapcorder.notification.NotificationAction
+import com.android.tapcorder.notification.TapcorderNotification
 import com.android.tapcorder.repository.SettingRepository
-import com.android.tapcorder.util.Actions
 import com.android.tapcorder.util.ExtensionUtil.TAG
-import com.android.tapcorder.util.TapcorderNotification
 import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
@@ -33,13 +33,11 @@ class TapcorderService: Service() {
             }
 
             synchronized(serviceLock) {
-                Log.d(TAG, "onRecordCompleted1 - audioRecordQueue.size:${audioRecorderQueue.size}, SettingRepository.audioRecordTime${SettingRepository.audioRecordTime}")
-
                 if (audioRecorderQueue.size >= SettingRepository.audioRecordTime) {
-                    val oldestAudioRecorder = audioRecorderQueue.pop()
-                    val oldestAudioRecordName = oldestAudioRecorder.audioFileName
-
-                    File(oldestAudioRecordName).delete()
+                    with(audioRecorderQueue.pop()) {
+                        File(audioFileName).delete()
+                        Log.w(TAG, "onRecordCompleted - $audioFileName is deleted")
+                    }
                 }
             }
         }
@@ -47,9 +45,9 @@ class TapcorderService: Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.action) {
-            Actions.START -> startService()
-            Actions.STOP -> stopService()
-            Actions.SAVE -> saveAudioRecord()
+            NotificationAction.START -> startService()
+            NotificationAction.STOP -> stopService()
+            NotificationAction.SAVE -> saveAudioRecord()
         }
         return START_STICKY
     }

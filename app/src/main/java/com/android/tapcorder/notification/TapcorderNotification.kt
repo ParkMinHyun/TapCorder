@@ -1,4 +1,4 @@
-package com.android.tapcorder.util
+package com.android.tapcorder.notification
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -25,7 +25,7 @@ object TapcorderNotification {
     fun createNotification(context: Context): Notification {
         // 클릭 시 MainActivity 로 이동
         val notificationIntent = Intent(context, MainActivity::class.java)
-        notificationIntent.action = Actions.MAIN
+        notificationIntent.action = NotificationAction.MAIN
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
         val pendingIntent = PendingIntent
@@ -33,35 +33,23 @@ object TapcorderNotification {
 
         // 각 버튼에 관한 Intent
         val stopIntent = Intent(context, TapcorderService::class.java)
-        stopIntent.action = Actions.STOP
+        stopIntent.action = NotificationAction.STOP
         val stopPendingIntent = PendingIntent
             .getService(context, 0, stopIntent, 0)
 
         val saveIntent = Intent(context, TapcorderService::class.java)
-        saveIntent.action = Actions.SAVE
+        saveIntent.action = NotificationAction.SAVE
         val savePendingIntent = PendingIntent
             .getService(context, 0, saveIntent, 0)
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_recording)
-            .setContentTitle("TapCorder")
+            .setContentTitle(App.getContext().getString(R.string.app_name))
             .setContentText("")
             .setOngoing(true)
-            .addAction(
-                NotificationCompat.Action(
-                    R.drawable.ic_notification_stop,
-                    "stop", stopPendingIntent
-                )
-            )
-            .addAction(
-                NotificationCompat.Action(
-                    R.drawable.ic_notification_save,
-                    "save", savePendingIntent
-                )
-            )
-            .setStyle(
-                androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1)
-            )
+            .addAction(NotificationCompat.Action(R.drawable.ic_notification_stop, NotificationAction.STOP, stopPendingIntent))
+            .addAction(NotificationCompat.Action(R.drawable.ic_notification_save, NotificationAction.SAVE, savePendingIntent))
+            .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .build()
@@ -72,15 +60,12 @@ object TapcorderNotification {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId, channelName,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            val manager = App.getContext()
-                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(
+            channelId, channelName,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        val manager = App.getContext()
+            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
     }
-
 }
