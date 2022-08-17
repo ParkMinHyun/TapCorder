@@ -102,6 +102,17 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     }
                 }
             })
+            setOnItemLongCLickListener(object: AudioRVAdapter.OnItemLongClickListener {
+                override fun onItemLongClickListener(view: View?, position: Int) {
+                    val contentUri = audioRVAdapter.audioDataList[position]
+                    Intent(Intent.ACTION_SEND).apply {
+                        type = "audio/*"
+                        putExtra(Intent.EXTRA_STREAM, contentUri)
+                    }.also {
+                        startActivity(Intent.createChooser(it, "tapcorder_time_share"))
+                    }
+                }
+            })
         }
 
         if (audioRVAdapter.audioDataList.isNotEmpty()) {

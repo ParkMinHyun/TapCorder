@@ -18,6 +18,7 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
     val audioDataList: ArrayList<Uri> = arrayListOf()
     private var listener: OnIconClickListener? = null
+    private var itemLongClickListener: OnItemLongClickListener? = null
 
     init {
         audioDataList.addAll(FileUtil.getSavedAudioUris())
@@ -51,8 +52,15 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         this.listener = listener
     }
 
+    fun setOnItemLongCLickListener(itemLongClickListener: OnItemLongClickListener?) {
+        this.itemLongClickListener = itemLongClickListener
+    }
+
     interface OnIconClickListener {
         fun onItemClick(view: View?, position: Int)
+    }
+    interface OnItemLongClickListener {
+        fun onItemLongClickListener(view: View?, position: Int)
     }
 
     inner class AudioHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -67,6 +75,13 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
                 if (pos != RecyclerView.NO_POSITION) {
                     listener?.onItemClick(view, pos)
                 }
+            }
+            itemView.setOnLongClickListener { view ->
+                val pos = adapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    itemLongClickListener?.onItemLongClickListener(view, pos)
+                }
+                false
             }
         }
     }
