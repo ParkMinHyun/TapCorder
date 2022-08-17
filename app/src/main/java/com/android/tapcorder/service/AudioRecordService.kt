@@ -7,7 +7,7 @@ import android.util.Log
 import com.android.tapcorder.App
 import com.android.tapcorder.device.AudioRecorder
 import com.android.tapcorder.notification.NotificationAction
-import com.android.tapcorder.notification.TapcorderNotification
+import com.android.tapcorder.notification.NotificationCreator
 import com.android.tapcorder.repository.SettingRepository
 import com.android.tapcorder.util.ExtensionUtil.TAG
 import kotlinx.coroutines.*
@@ -15,7 +15,7 @@ import java.io.File
 import java.util.*
 import kotlin.concurrent.timer
 
-class TapcorderService: Service() {
+class AudioRecordService: Service() {
 
     private val audioRecorderQueue = LinkedList<AudioRecorder>()
     private lateinit var timer: Timer
@@ -56,7 +56,7 @@ class TapcorderService: Service() {
         Log.d(TAG, "startService")
 
         isServiceRunning = true
-        startForeground(NOTIFICATION_ID, TapcorderNotification.createNotification(this))
+        startForeground(NOTIFICATION_ID, NotificationCreator.createNotification(this))
         startAudioRecordingTimer()
         App.getCurrentActivity().finish()
     }

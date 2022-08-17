@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.tapcorder.App
 import com.android.tapcorder.base.BaseFragment
 import com.android.tapcorder.databinding.FragmentMainBinding
-import com.android.tapcorder.service.TapcorderService
+import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
 import com.android.tapcorder.notification.NotificationAction
@@ -92,7 +92,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     }
 
     private fun startTapcorderService() {
-        Intent(activity, TapcorderService::class.java).also {
+        Intent(activity, AudioRecordService::class.java).also {
             it.action = NotificationAction.START
             activity?.startForegroundService(it)
         }

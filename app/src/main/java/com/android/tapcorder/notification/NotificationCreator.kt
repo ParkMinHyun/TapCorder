@@ -7,15 +7,14 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.android.tapcorder.App
 import com.android.tapcorder.BuildConfig
 import com.android.tapcorder.MainActivity
 import com.android.tapcorder.R
-import com.android.tapcorder.service.TapcorderService
+import com.android.tapcorder.service.AudioRecordService
 
-object TapcorderNotification {
+object NotificationCreator {
 
     private val channelId: String
         get() = App.getContext().packageName
@@ -32,12 +31,12 @@ object TapcorderNotification {
             .getActivity(context, 0, notificationIntent, FLAG_UPDATE_CURRENT)
 
         // 각 버튼에 관한 Intent
-        val stopIntent = Intent(context, TapcorderService::class.java)
+        val stopIntent = Intent(context, AudioRecordService::class.java)
         stopIntent.action = NotificationAction.STOP
         val stopPendingIntent = PendingIntent
             .getService(context, 0, stopIntent, 0)
 
-        val saveIntent = Intent(context, TapcorderService::class.java)
+        val saveIntent = Intent(context, AudioRecordService::class.java)
         saveIntent.action = NotificationAction.SAVE
         val savePendingIntent = PendingIntent
             .getService(context, 0, saveIntent, 0)
@@ -60,12 +59,12 @@ object TapcorderNotification {
     }
 
     private fun createNotificationChannel() {
+        val manager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channel = NotificationChannel(
             channelId, channelName,
             NotificationManager.IMPORTANCE_DEFAULT
         )
-        val manager = App.getContext()
-            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         manager.createNotificationChannel(channel)
     }
 }
