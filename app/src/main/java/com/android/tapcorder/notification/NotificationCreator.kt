@@ -4,9 +4,11 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.android.tapcorder.App
 import com.android.tapcorder.BuildConfig
@@ -34,8 +36,10 @@ object NotificationCreator {
             action = NotificationAction.SAVE
         }
 
-        val stopPendingIntent = PendingIntent.getService(context, 0, stopIntent, 0)
-        val savePendingIntent = PendingIntent.getService(context, 0, saveIntent, 0)
+        val stopPendingIntent =
+            PendingIntent.getService(context, 0, stopIntent, getPendingIntentFlags())
+        val savePendingIntent =
+            PendingIntent.getService(context, 0, saveIntent, getPendingIntentFlags())
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_recording)
@@ -46,7 +50,7 @@ object NotificationCreator {
             .addAction(NotificationCompat.Action(R.drawable.ic_notification_save, NotificationAction.SAVE, savePendingIntent))
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(PendingIntent.getActivity(context, 0, notificationIntent, FLAG_UPDATE_CURRENT))
+            .setContentIntent(PendingIntent.getActivity(context, 0, notificationIntent, getPendingIntentFlags()))
             .build()
 
         createNotificationChannel()
@@ -62,5 +66,13 @@ object NotificationCreator {
         )
 
         manager.createNotificationChannel(channel)
+    }
+
+    private fun getPendingIntentFlags(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            FLAG_IMMUTABLE
+        } else {
+            FLAG_UPDATE_CURRENT
+        }
     }
 }
