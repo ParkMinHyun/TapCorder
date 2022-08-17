@@ -16,7 +16,7 @@ class FileUtil {
         val SAVE_FILE_DIR = "$TEMP_FILE_DIR/result/"
 
         @SuppressLint("SimpleDateFormat")
-        fun createFileName() = "$TEMP_FILE_DIR/${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.mp4"
+        fun createFileName() = "$TEMP_FILE_DIR/${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.mp3"
 
         fun getSavedAudioUris(): List<Uri> = mutableListOf<Uri>().apply {
             Log.d(TAG, "getSavedAudioUris")
