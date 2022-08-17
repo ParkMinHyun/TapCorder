@@ -26,7 +26,7 @@
         android:layout_marginBottom="13dp"
         android:text="choose your preferred real-time recording time"
         android:textColor="@color/black"
-        android:textSize="15sp"/>
+        android:textSize="15sp" />
 
     <RadioGroup
         android:id="@+id/recordTimeGroup"
@@ -41,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
+            android:buttonTint="@color/app_color"
             android:text="10초" />
 
         <RadioButton
@@ -48,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
+            android:buttonTint="@color/app_color"
             android:text="30초" />
 
         <RadioButton
@@ -55,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
+            android:buttonTint="@color/app_color"
             android:text="1분" />
 
         <RadioButton
@@ -62,12 +65,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
+            android:buttonTint="@color/app_color"
             android:text="3분" />
 
         <RadioButton
             android:id="@+id/recordTime300"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="@color/app_color"
             android:text="5분" />
     </RadioGroup>
 
@@ -77,6 +82,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="15dp"
-        android:backgroundTint="@color/teal_700"
+        android:backgroundTint="@color/app_color"
         android:text="start" />
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -89,6 +90,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     viewModel.playAudio(File(uriName))
                 }
             })
+        }
+
+        if (audioRVAdapter.audioDataList.isNotEmpty()) {
+            viewBinding.emptyText.isVisible = false
         }
 
         viewBinding.recyclerview.adapter = audioRVAdapter
