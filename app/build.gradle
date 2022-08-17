@@ -52,6 +52,7 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
     implementation "androidx.cardview:cardview:1.0.0"
+    implementation "com.github.skydoves:expandablelayout:1.0.7"
 
     // hilt
     implementation 'com.google.dagger:hilt-android:2.41'

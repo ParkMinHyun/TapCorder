@@ -13,6 +13,7 @@ import com.android.tapcorder.data.AudioData
 import com.android.tapcorder.ui.custom.ScalableImageButton
 import com.android.tapcorder.util.ExtensionUtil.TAG
 import com.android.tapcorder.util.ExtensionUtil.toMinuteFormat
+import com.skydoves.expandablelayout.ExpandableLayout
 
 class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
@@ -36,9 +37,21 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     override fun onBindViewHolder(holder: AudioHolder, position: Int) {
         val audioData = audioDataList[position]
 
-        holder.audioName.text = audioData.name
+        holder.audioName.text = audioData.name.split('.').first()
         holder.audioDate.text = audioData.date
         holder.audioDuration.text = audioData.duration.toMinuteFormat()
+
+//        holder.expandableLayout.setOnExpandListener {
+//            App.showToast("expanded")
+//        }
+//
+        holder.expandableLayout.setOnClickListener {
+            if (holder.expandableLayout.isExpanded) {
+                holder.expandableLayout.collapse()
+            } else {
+                holder.expandableLayout.expand()
+            }
+        }
     }
 
     @Synchronized
@@ -75,8 +88,10 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         var audioName: TextView
         var audioDuration: TextView
         var audioDate: TextView
+        var expandableLayout: ExpandableLayout
 
         init {
+            expandableLayout = itemView.findViewById(R.id.expandable_layout)
             audioImage = itemView.findViewById(R.id.audio_state_image)
             audioName = itemView.findViewById(R.id.audio_name)
             audioDuration = itemView.findViewById(R.id.audio_duration)
