@@ -9,12 +9,19 @@
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+    <View
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:background="@color/gray"
+        android:layout_width="20dp"
+        android:layout_height="3dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="Recording Time"
+        android:layout_marginTop="15dp"
+        android:text="음성 녹음 시간 설정"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -24,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="13dp"
-        android:text="choose your preferred real-time recording time"
+        android:text="선호하는 자동 음성 녹음 시간을 정해주세요"
         android:textColor="@color/black"
         android:textSize="15sp" />
 
@@ -83,5 +90,5 @@
         android:layout_gravity="center"
         android:layout_marginBottom="15dp"
         android:backgroundTint="@color/app_color"
-        android:text="start" />
+        android:text="시작" />
 </LinearLayout>

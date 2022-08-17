@@ -91,14 +91,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             setOnItemClickListener(object : AudioRVAdapter.OnIconClickListener {
                 var playIndex: Int? = null
                 override fun onItemClick(view: View?, position: Int) {
-                    if (viewModel.isAudioPlaying) {
+                    if (playIndex != null) {
                         Log.i(TAG, "Audio already playing")
                         return
                     }
 
                     playIndex = position
-                    val uri = audioRVAdapter.audioDataList[position].toString()
-                    viewModel.playAudio(File(uri)) {
+                    val uri = audioRVAdapter.audioDataList[position]
+
+                    viewModel.playAudio(File(uri.toString())) {
                         playIndex = null
                         viewModel.stopAudio()
                     }

@@ -5,10 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.tapcorder.R
+import com.android.tapcorder.ui.custom.ScalableImageButton
 import com.android.tapcorder.util.ExtensionUtil.TAG
 import com.android.tapcorder.util.FileUtil
 import java.io.File
@@ -26,7 +26,7 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioHolder {
         return AudioHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_audio, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.layout_audio_holder, parent, false)
         )
     }
 
@@ -64,12 +64,12 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     }
 
     inner class AudioHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var audioBtn: ImageButton
+        var audioBtn: ScalableImageButton
         var audioTitle: TextView
 
         init {
-            audioBtn = itemView.findViewById(R.id.playBtn_itemAudio)
-            audioTitle = itemView.findViewById(R.id.audioTitle_itemAudio)
+            audioBtn = itemView.findViewById(R.id.audio_state_image)
+            audioTitle = itemView.findViewById(R.id.audio_name)
             audioBtn.setOnClickListener { view ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {

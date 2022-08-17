@@ -15,16 +15,12 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     private lateinit var mediaPlayer: MediaPlayer
 
-    var isAudioPlaying = false
-        private set
-
     private val _recordedAudioLiveData = MutableLiveData<Uri>()
     val recordedAudioLiveData = _recordedAudioLiveData
 
     fun playAudio(file: File, onCompleted: () -> Unit) {
         Log.d(TAG, "playAudio ${file.name}")
 
-        isAudioPlaying = true
         mediaPlayer = MediaPlayer().apply {
             setOnCompletionListener { onCompleted.invoke() }
             setDataSource(file.absolutePath)
@@ -35,6 +31,5 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     fun stopAudio() {
         mediaPlayer.stop()
-        isAudioPlaying = false
     }
 }

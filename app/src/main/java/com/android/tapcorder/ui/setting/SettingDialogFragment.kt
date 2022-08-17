@@ -37,7 +37,7 @@ class SettingDialogFragment : BottomSheetDialogFragment() {
             for (i in 0 until viewBinding.recordTimeGroup.childCount) {
                 viewBinding.recordTimeGroup.getChildAt(i).isEnabled = false
             }
-            viewBinding.startRecordButton.text = "Stop"
+            viewBinding.startRecordButton.text = "중지"
         }
     }
 
