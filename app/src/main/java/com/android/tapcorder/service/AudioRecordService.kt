@@ -4,12 +4,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.tapcorder.App
+import com.android.tapcorder.Constant.INTENT_AUDIO_FILE
+import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
 import com.android.tapcorder.device.AudioRecorder
 import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.notification.NotificationCreator
 import com.android.tapcorder.repository.SettingRepository
 import com.android.tapcorder.util.ExtensionUtil.TAG
+import com.android.tapcorder.util.FileUtil
 import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
@@ -113,20 +117,24 @@ class AudioRecordService: Service() {
             with(audioRecorderQueue.pop()) {
                 Log.i(TAG, "saveAudioRecord - $audioFileName is saved")
                 stopRecording()
+
+                val saveFileName = audioFileName.split('/').last()
+                val saveFilePath = FileUtil.SAVE_FILE_DIR + saveFileName
+
+                File(audioFileName).copyTo(File(saveFilePath))
+                File(audioFileName).delete()
+
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(
+                    Intent(INTENT_NOTIFY_SAVE_AUDIO).apply {
+                        putExtra(INTENT_AUDIO_FILE, saveFilePath)
+                    }
+                )
             }
         }
     }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     companion object {

@@ -12,21 +12,22 @@ import java.util.*
 class FileUtil {
 
     companion object {
-        val FILE_DST = App.getContext().getExternalFilesDir("/")!!.absolutePath
+        val TEMP_FILE_DIR = App.getContext().getExternalFilesDir("/")!!.absolutePath
+        val SAVE_FILE_DIR = "$TEMP_FILE_DIR/result/"
 
         @SuppressLint("SimpleDateFormat")
-        fun createFileName() = "$FILE_DST/${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.mp4"
+        fun createFileName() = "$TEMP_FILE_DIR/${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.mp4"
 
         fun getSavedAudioUris(): List<Uri> = mutableListOf<Uri>().apply {
             Log.d(TAG, "getSavedAudioUris")
 
-            if (!File(FILE_DST).exists()) {
-                File(FILE_DST).mkdir()
+            if (!File(SAVE_FILE_DIR).exists()) {
+                File(SAVE_FILE_DIR).mkdir()
             }
 
-            File(FILE_DST).listFiles()?.forEach {
+            File(SAVE_FILE_DIR).listFiles()?.forEach {
                 Log.v(TAG, "${it.name} - ${it.length()}")
-                add(Uri.parse("$FILE_DST/${it.name}"))
+                add(Uri.parse("$SAVE_FILE_DIR/${it.name}"))
             }
         }
     }

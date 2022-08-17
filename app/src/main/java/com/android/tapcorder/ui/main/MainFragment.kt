@@ -1,19 +1,29 @@
 package com.android.tapcorder.ui.main
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.Uri
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.tapcorder.App
+import com.android.tapcorder.Constant.INTENT_AUDIO_FILE
+import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
 import com.android.tapcorder.base.BaseFragment
 import com.android.tapcorder.databinding.FragmentMainBinding
 import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
+import com.android.tapcorder.util.ExtensionUtil.TAG
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::inflate) {
@@ -22,18 +32,26 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     private lateinit var audioRVAdapter: AudioRVAdapter
 
+    private val messageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            with(Uri.parse(intent.getStringExtra(INTENT_AUDIO_FILE))) {
+                Log.e(TAG, "onReceive - $this")
+                audioRVAdapter.addItem(this)
+            }
+        }
+    }
+
     override fun initView() {
         super.initView()
 
-        viewModel.recordedAudioLiveData.observe(viewLifecycleOwner) {
-            audioRVAdapter.addItem(it)
-        }
+        LocalBroadcastManager.getInstance(App.getCurrentActivity()).registerReceiver(
+            messageReceiver, IntentFilter(INTENT_NOTIFY_SAVE_AUDIO)
+        )
     }
 
     override fun setUpViews() {
         super.setUpViews()
 
-        setUpRecordButton()
         setUpAudioRecyclerView()
         setUpSettingButton()
     }
@@ -49,30 +67,17 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             SettingDialogFragment().apply {
                 setSettingCallback(object : SettingDialogFragment.SettingCallback{
                     override fun onStarted() {
-                        App.showToast("Audio Recording Started")
+                        Log.i(TAG, "Audio Recording Started")
                         startService()
                     }
 
                     override fun onStopped() {
-                        App.showToast("Audio Recording Stopped")
+                        Log.i(TAG, "Audio Recording Stopped")
                         stopService()
                     }
                 })
             }.show(childFragmentManager, settingDialogTag)
         }
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private fun setUpRecordButton() {
-//        viewBinding.audioRecordButton.setOnClickListener {
-//            if (viewModel.isAudioRecording) {
-//                viewBinding.audioRecordButton.setImageDrawable(App.getDrawableImage(R.drawable.ic_record))
-//                viewModel.stopRecording()
-//            } else {
-//                viewBinding.audioRecordButton.setImageDrawable(App.getDrawableImage(R.drawable.ic_recording))
-//                viewModel.startRecording()
-//            }
-//        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
