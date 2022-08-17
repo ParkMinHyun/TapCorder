@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -24,6 +25,7 @@ import com.android.tapcorder.ui.setting.SettingDialogFragment
 import com.android.tapcorder.util.ExtensionUtil.TAG
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import java.lang.String.valueOf
 
 
 @AndroidEntryPoint
@@ -104,13 +106,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             })
             setOnItemLongCLickListener(object: AudioRVAdapter.OnItemLongClickListener {
                 override fun onItemLongClickListener(view: View?, position: Int) {
-                    val contentUri = audioRVAdapter.audioDataList[position]
-                    Intent(Intent.ACTION_SEND).apply {
-                        type = "audio/*"
-                        putExtra(Intent.EXTRA_STREAM, contentUri)
-                    }.also {
-                        startActivity(Intent.createChooser(it, "tapcorder_time_share"))
-                    }
+                    shareFile(audioRVAdapter.audioDataList[position])
                 }
             })
         }
@@ -124,6 +120,17 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             layoutManager = LinearLayoutManager(App.getContext()).apply {
                 orientation = LinearLayoutManager.VERTICAL
             }
+        }
+    }
+    private fun shareFile(uri: Uri) {
+        val internalFile = File(valueOf(uri))
+        val contentUri = FileProvider.getUriForFile(App.getContext(), "${App.getContext().packageName}.provider", internalFile)
+
+        Intent(Intent.ACTION_SEND).apply {
+            type = "audio/*"
+            putExtra(Intent.EXTRA_STREAM, contentUri)
+        }.also {
+            startActivity(Intent.createChooser(it, "Share audio file"))
         }
     }
 
