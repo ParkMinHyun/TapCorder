@@ -13,19 +13,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 private const val DATA_STORE_FIELD_SETTING = "setting"
-private const val RECORD_TIME_SETTING = "recordTimeSetting"
+private const val AUDIO_RECORD_TIME_SETTING = "audioRecordTimeSetting"
 
 object SettingRepository {
-    private val recordTimeKey by lazy { intPreferencesKey(RECORD_TIME_SETTING) }
+    private val audioRecordTimeKey by lazy { intPreferencesKey(AUDIO_RECORD_TIME_SETTING) }
 
     private val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = DATA_STORE_FIELD_SETTING)
 
-    var recordTime: Int
+    var audioRecordTime: Int
         get() {
-            return getDataStore(recordTimeKey, 10)
+            return getDataStore(audioRecordTimeKey, 10)
         }
         set(value) {
-            setDataStore(recordTimeKey, value)
+            setDataStore(audioRecordTimeKey, value)
         }
 
     private fun <T> getDataStore(key: Preferences.Key<T>, defaultValue: T) =

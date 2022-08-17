@@ -38,7 +38,7 @@ class SettingDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun setUpRecordingTime() {
-        when (SettingRepository.recordTime) {
+        when (SettingRepository.audioRecordTime) {
             30 -> viewBinding.recordTime30.isChecked = true
             60 -> viewBinding.recordTime60.isChecked = true
             100 -> viewBinding.recordTime100.isChecked = true
@@ -48,11 +48,11 @@ class SettingDialogFragment : BottomSheetDialogFragment() {
 
         viewBinding.recordTimeGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.recordTime10 -> SettingRepository.recordTime = 10
-                R.id.recordTime30 -> SettingRepository.recordTime = 30
-                R.id.recordTime60 -> SettingRepository.recordTime = 60
-                R.id.recordTime100 -> SettingRepository.recordTime = 100
-                R.id.recordTime300 -> SettingRepository.recordTime = 300
+                R.id.recordTime10 -> SettingRepository.audioRecordTime = 10
+                R.id.recordTime30 -> SettingRepository.audioRecordTime = 30
+                R.id.recordTime60 -> SettingRepository.audioRecordTime = 60
+                R.id.recordTime100 -> SettingRepository.audioRecordTime = 100
+                R.id.recordTime300 -> SettingRepository.audioRecordTime = 300
             }
         }
     }
