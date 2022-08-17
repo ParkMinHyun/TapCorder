@@ -21,7 +21,9 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     private var itemLongClickListener: OnItemLongClickListener? = null
 
     init {
-        audioDataList.addAll(AudioDB.getSavedAudioData())
+        for (audioData in AudioDB.getSavedAudioData()) {
+            audioDataList.add(0, audioData)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioHolder {
@@ -42,8 +44,9 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     @Synchronized
     fun addItem(audioData: AudioData) {
         Log.i(TAG, "addItem - $audioData")
-        audioDataList.add(audioData)
-        notifyItemInserted(itemCount)
+
+        audioDataList.add(0, audioData)
+        notifyItemInserted(0)
     }
 
     @Synchronized

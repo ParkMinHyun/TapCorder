@@ -39,12 +39,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     private val messageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            view?.post { viewBinding.emptyText.isVisible = false }
+            val data = intent.getStringExtra(INTENT_AUDIO_DATA)!!
 
-            val a = intent.getStringExtra(INTENT_AUDIO_DATA)!!
-            Log.e(TAG, "!!!!!!!!!onReceive $a")
+            Log.i(TAG, "onReceive - $data")
+            audioRVAdapter.addItem(AudioDB.getAudioData(data))
 
-            audioRVAdapter.addItem(AudioDB.getAudioData(a))
+            view?.post {
+                viewBinding.emptyText.isVisible = false
+                viewBinding.recyclerview.scrollToPosition(0)
+            }
         }
     }
 
