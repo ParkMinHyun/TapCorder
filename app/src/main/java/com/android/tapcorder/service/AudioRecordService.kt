@@ -23,8 +23,6 @@ class AudioRecordService: Service() {
     private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
     private val serviceLock = Any()
 
-    private var isServiceRunning = false
-
     private val audioRecorderTaskCallback = object : AudioRecorder.TaskCallback {
         override fun onRecordCompleted() {
             if (!isServiceRunning) {
@@ -132,7 +130,9 @@ class AudioRecordService: Service() {
     }
 
     companion object {
-        const val TAG = "TapcorderService"
         const val NOTIFICATION_ID = 1516
+
+        var isServiceRunning = false
+            private set
     }
 }

@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.tapcorder.App
 import com.android.tapcorder.base.BaseFragment
 import com.android.tapcorder.databinding.FragmentMainBinding
+import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
-import com.android.tapcorder.notification.NotificationAction
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -49,12 +49,13 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             SettingDialogFragment().apply {
                 setSettingCallback(object : SettingDialogFragment.SettingCallback{
                     override fun onStarted() {
-                        startTapcorderService()
-                        App.showToast("onStarted")
+                        App.showToast("Audio Recording Started")
+                        startService()
                     }
 
                     override fun onStopped() {
-                        App.showToast("onStopped")
+                        App.showToast("Audio Recording Stopped")
+                        stopService()
                     }
                 })
             }.show(childFragmentManager, settingDialogTag)
@@ -91,11 +92,20 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         }
     }
 
-    private fun startTapcorderService() {
-        Intent(activity, AudioRecordService::class.java).also {
-            it.action = NotificationAction.START
-            activity?.startForegroundService(it)
-        }
+    private fun startService() {
+        activity?.startForegroundService(
+            Intent(activity, AudioRecordService::class.java).apply {
+                action = NotificationAction.START
+            }
+        )
+    }
+
+    private fun stopService() {
+        activity?.startForegroundService(
+            Intent(activity, AudioRecordService::class.java).apply {
+                action = NotificationAction.STOP
+            }
+        )
     }
 
     override fun onDestroyView() {
