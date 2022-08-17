@@ -87,9 +87,19 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     private fun setUpAudioRecyclerView() {
         audioRVAdapter = AudioRVAdapter().apply {
             setOnItemClickListener(object : AudioRVAdapter.OnIconClickListener {
+                var playIndex: Int? = null
                 override fun onItemClick(view: View?, position: Int) {
-                    val uriName = audioRVAdapter.audioDataList[position].toString()
-                    viewModel.playAudio(File(uriName))
+                    if (viewModel.isAudioPlaying) {
+                        Log.i(TAG, "Audio already playing")
+                        return
+                    }
+
+                    playIndex = position
+                    val uri = audioRVAdapter.audioDataList[position].toString()
+                    viewModel.playAudio(File(uri)) {
+                        playIndex = null
+                        viewModel.stopAudio()
+                    }
                 }
             })
         }
@@ -98,9 +108,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             viewBinding.emptyText.isVisible = false
         }
 
-        viewBinding.recyclerview.adapter = audioRVAdapter
-        viewBinding.recyclerview.layoutManager = LinearLayoutManager(App.getContext()).apply {
-            orientation = LinearLayoutManager.VERTICAL
+        with(viewBinding.recyclerview) {
+            adapter = audioRVAdapter
+            layoutManager = LinearLayoutManager(App.getContext()).apply {
+                orientation = LinearLayoutManager.VERTICAL
+            }
         }
     }
 

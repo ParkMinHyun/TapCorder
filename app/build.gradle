@@ -9,7 +9,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.android.tabcorder"
+        applicationId "com.android.tapcorder"
         minSdk 29
         targetSdk 32
         versionCode 1

@@ -21,14 +21,12 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _recordedAudioLiveData = MutableLiveData<Uri>()
     val recordedAudioLiveData = _recordedAudioLiveData
 
-    fun playAudio(file: File) {
+    fun playAudio(file: File, onCompleted: () -> Unit) {
         Log.d(TAG, "playAudio ${file.name}")
 
         isAudioPlaying = true
         mediaPlayer = MediaPlayer().apply {
-            setOnCompletionListener {
-                stopAudio()
-            }
+            setOnCompletionListener { onCompleted.invoke() }
             setDataSource(file.absolutePath)
             prepare()
             start()
