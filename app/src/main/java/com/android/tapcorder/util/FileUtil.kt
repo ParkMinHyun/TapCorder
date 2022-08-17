@@ -16,7 +16,7 @@ class FileUtil {
         @SuppressLint("SimpleDateFormat")
         fun createTempFilePath() = "$TEMP_FILE_DIR/${SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss").format(Date())}.mp3"
 
-        fun createResultFilePath(): String {
+        fun createSaveFilePath(): String {
             var index = 1
             while (true) {
                 val fileName = "$SAVE_FILE_DIR/$DEFAULT_FILE_NAME$index.mp3"

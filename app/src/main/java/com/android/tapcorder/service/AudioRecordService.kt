@@ -119,34 +119,34 @@ class AudioRecordService: Service() {
             with(audioRecorderQueue.pop()) {
                 stopRecording()
 
-                val savedFilePath = FileUtil.createResultFilePath()
-                val savedFileName = savedFilePath.split('/').last()
-                val savedFileDate = audioFilePath.split('/').last().split('.').first()
+                val saveFilePath = FileUtil.createSaveFilePath()
+                val saveFileName = saveFilePath.split('/').last()
+                val saveFileDate = audioFilePath.split('/').last().split('.').first()
 
-                File(audioFilePath).copyTo(File(savedFilePath))
+                File(audioFilePath).copyTo(File(saveFilePath))
                 File(audioFilePath).delete()
 
-                Log.i(TAG, "saveAudioRecord - $savedFilePath is saved")
+                Log.i(TAG, "saveAudioRecord - $saveFilePath is saved")
 
                 AudioDB.insertAudioData(AudioData(
-                    savedFileName,
+                    saveFileName,
                     SettingRepository.audioRecordTime,
-                    savedFileDate)
+                    saveFileDate)
                 )
 
-                sendAudioData(savedFileName)
+                sendAudioData(saveFileName)
             }
         }
     }
 
-    private fun sendAudioData(savedFileName: String) {
+    private fun sendAudioData(saveFileName: String) {
         if (App.getCurrentActivity().isDestroyed) {
             return
         }
 
         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(
             Intent(INTENT_NOTIFY_SAVE_AUDIO).apply {
-                putExtra(INTENT_AUDIO_DATA, savedFileName)
+                putExtra(INTENT_AUDIO_DATA, saveFileName)
             }
         )
     }
