@@ -1,6 +1,6 @@
 package com.android.tapcorder.ui.audio
 
-import android.net.Uri
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,20 +8,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.tapcorder.R
+import com.android.tapcorder.data.AudioDB
+import com.android.tapcorder.data.AudioData
 import com.android.tapcorder.ui.custom.ScalableImageButton
 import com.android.tapcorder.util.ExtensionUtil.TAG
-import com.android.tapcorder.util.FileUtil
-import java.io.File
-import java.lang.String.valueOf
+import com.android.tapcorder.util.ExtensionUtil.toMinuteFormat
 
 class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
-    val audioDataList: ArrayList<Uri> = arrayListOf()
+    val audioDataList: ArrayList<AudioData> = arrayListOf()
     private var listener: OnIconClickListener? = null
     private var itemLongClickListener: OnItemLongClickListener? = null
 
     init {
-        audioDataList.addAll(FileUtil.getSavedAudioUris())
+        audioDataList.addAll(AudioDB.getSavedAudioData())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioHolder {
@@ -30,16 +30,19 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: AudioHolder, position: Int) {
-        val uriName = valueOf(audioDataList[position])
-        val file = File(uriName)
-        holder.audioTitle.text = file.name
+        val audioData = audioDataList[position]
+
+        holder.audioName.text = audioData.name
+        holder.audioDate.text = audioData.date
+        holder.audioDuration.text = audioData.duration.toMinuteFormat()
     }
 
     @Synchronized
-    fun addItem(uri: Uri) {
-        Log.i(TAG, "addItem - $uri")
-        audioDataList.add(uri)
+    fun addItem(audioData: AudioData) {
+        Log.i(TAG, "addItem - $audioData")
+        audioDataList.add(audioData)
         notifyItemInserted(itemCount)
     }
 
@@ -59,18 +62,24 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     interface OnIconClickListener {
         fun onItemClick(view: View?, position: Int)
     }
+
     interface OnItemLongClickListener {
         fun onItemLongClickListener(view: View?, position: Int)
     }
 
     inner class AudioHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var audioBtn: ScalableImageButton
-        var audioTitle: TextView
+        var audioImage: ScalableImageButton
+        var audioName: TextView
+        var audioDuration: TextView
+        var audioDate: TextView
 
         init {
-            audioBtn = itemView.findViewById(R.id.audio_state_image)
-            audioTitle = itemView.findViewById(R.id.audio_name)
-            audioBtn.setOnClickListener { view ->
+            audioImage = itemView.findViewById(R.id.audio_state_image)
+            audioName = itemView.findViewById(R.id.audio_name)
+            audioDuration = itemView.findViewById(R.id.audio_duration)
+            audioDate = itemView.findViewById(R.id.audio_date)
+
+            audioImage.setOnClickListener { view ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
                     listener?.onItemClick(view, pos)

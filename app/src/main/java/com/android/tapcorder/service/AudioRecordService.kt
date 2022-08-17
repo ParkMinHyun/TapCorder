@@ -6,8 +6,10 @@ import android.os.IBinder
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.tapcorder.App
-import com.android.tapcorder.Constant.INTENT_AUDIO_FILE
+import com.android.tapcorder.Constant.INTENT_AUDIO_DATA
 import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
+import com.android.tapcorder.data.AudioDB
+import com.android.tapcorder.data.AudioData
 import com.android.tapcorder.device.AudioRecorder
 import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.notification.NotificationCreator
@@ -37,8 +39,8 @@ class AudioRecordService: Service() {
             synchronized(serviceLock) {
                 if (audioRecorderQueue.size >= SettingRepository.audioRecordTime) {
                     with(audioRecorderQueue.pop()) {
-                        File(audioFileName).delete()
-                        Log.w(TAG, "onRecordCompleted - $audioFileName is deleted")
+                        File(audioFilePath).delete()
+                        Log.w(TAG, "onRecordCompleted - $audioFilePath is deleted")
                     }
                 }
             }
@@ -104,7 +106,7 @@ class AudioRecordService: Service() {
             timer.cancel()
 
             for (audioRecorder in audioRecorderQueue) {
-                File(audioRecorder.audioFileName).delete()
+                File(audioRecorder.audioFilePath).delete()
             }
             audioRecorderQueue.clear()
         }
@@ -115,22 +117,38 @@ class AudioRecordService: Service() {
 
         synchronized(serviceLock) {
             with(audioRecorderQueue.pop()) {
-                Log.i(TAG, "saveAudioRecord - $audioFileName is saved")
                 stopRecording()
 
-                val saveFileName = audioFileName.split('/').last()
-                val saveFilePath = FileUtil.SAVE_FILE_DIR + saveFileName
+                val savedFilePath = FileUtil.createResultFilePath()
+                val savedFileName = savedFilePath.split('/').last()
+                val savedFileDate = audioFilePath.split('/').last().split('.').first()
 
-                File(audioFileName).copyTo(File(saveFilePath))
-                File(audioFileName).delete()
+                File(audioFilePath).copyTo(File(savedFilePath))
+                File(audioFilePath).delete()
 
-                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(
-                    Intent(INTENT_NOTIFY_SAVE_AUDIO).apply {
-                        putExtra(INTENT_AUDIO_FILE, saveFilePath)
-                    }
+                Log.i(TAG, "saveAudioRecord - $savedFilePath is saved")
+
+                AudioDB.insertAudioData(AudioData(
+                    savedFileName,
+                    SettingRepository.audioRecordTime,
+                    savedFileDate)
                 )
+
+                sendAudioData(savedFileName)
             }
         }
+    }
+
+    private fun sendAudioData(savedFileName: String) {
+        if (App.getCurrentActivity().isDestroyed) {
+            return
+        }
+
+        LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(
+            Intent(INTENT_NOTIFY_SAVE_AUDIO).apply {
+                putExtra(INTENT_AUDIO_DATA, savedFileName)
+            }
+        )
     }
 
     override fun onBind(p0: Intent?): IBinder? {

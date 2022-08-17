@@ -11,16 +11,16 @@ class AudioRecorder(
     private val recorderTaskCallback: TaskCallback
 ) {
     private var mediaRecorder: MediaRecorder? = null
-    val audioFileName: String = FileUtil.createFileName()
+    val audioFilePath: String = FileUtil.createTempFilePath()
 
     fun startRecording() {
-        Log.d(TAG, "startRecording($audioFileName)")
+        Log.d(TAG, "startRecording($audioFilePath)")
 
         try {
             mediaRecorder = MediaRecorder().apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                setOutputFile(audioFileName)
+                setOutputFile(audioFilePath)
                 setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             }
 
@@ -30,14 +30,14 @@ class AudioRecorder(
                 is IOException -> Log.e(TAG, "MediaRecorder prepare failed")
                 is RuntimeException -> Log.e(TAG, "MediaRecorder setting failed")
             }
-            File(audioFileName).delete()
+            File(audioFilePath).delete()
         }
 
         mediaRecorder?.start()
     }
 
     fun stopRecording() {
-        Log.d(TAG, "stopRecording($audioFileName)")
+        Log.d(TAG, "stopRecording($audioFilePath)")
 
         mediaRecorder?.stop()
         mediaRecorder?.release()

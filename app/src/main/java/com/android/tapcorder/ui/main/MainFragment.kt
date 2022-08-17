@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
@@ -14,18 +13,21 @@ import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.tapcorder.App
-import com.android.tapcorder.Constant.INTENT_AUDIO_FILE
+import com.android.tapcorder.Constant
+import com.android.tapcorder.Constant.INTENT_AUDIO_DATA
 import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
 import com.android.tapcorder.base.BaseFragment
+import com.android.tapcorder.data.AudioDB
+import com.android.tapcorder.data.AudioData
 import com.android.tapcorder.databinding.FragmentMainBinding
 import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
 import com.android.tapcorder.util.ExtensionUtil.TAG
+import com.android.tapcorder.util.FileUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import java.lang.String.valueOf
 
 
 @AndroidEntryPoint
@@ -37,12 +39,12 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     private val messageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (App.getCurrentActivity().isDestroyed) {
-                return
-            }
+            view?.post { viewBinding.emptyText.isVisible = false }
 
-            viewBinding.emptyText.isVisible = false
-            audioRVAdapter.addItem(Uri.parse(intent.getStringExtra(INTENT_AUDIO_FILE)))
+            val a = intent.getStringExtra(INTENT_AUDIO_DATA)!!
+            Log.e(TAG, "!!!!!!!!!onReceive $a")
+
+            audioRVAdapter.addItem(AudioDB.getAudioData(a))
         }
     }
 
@@ -97,9 +99,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     }
 
                     playIndex = position
-                    val uri = audioRVAdapter.audioDataList[position]
+                    val audioData = audioRVAdapter.audioDataList[position]
+                    val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioData.name
 
-                    viewModel.playAudio(File(uri.toString())) {
+                    viewModel.playAudio(File(audioFilePath)) {
                         playIndex = null
                         viewModel.stopAudio()
                     }
@@ -107,7 +110,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             })
             setOnItemLongCLickListener(object: AudioRVAdapter.OnItemLongClickListener {
                 override fun onItemLongClickListener(view: View?, position: Int) {
-                    shareFile(audioRVAdapter.audioDataList[position])
+                    shareAudioFile(audioRVAdapter.audioDataList[position])
                 }
             })
         }
@@ -123,15 +126,17 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             }
         }
     }
-    private fun shareFile(uri: Uri) {
-        val internalFile = File(valueOf(uri))
-        val contentUri = FileProvider.getUriForFile(App.getContext(), "${App.getContext().packageName}.provider", internalFile)
+
+    private fun shareAudioFile(audioData: AudioData) {
+        val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioData.name
+        val internalFile = File(audioFilePath)
+        val contentUri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", internalFile)
 
         Intent(Intent.ACTION_SEND).apply {
             type = "audio/*"
             putExtra(Intent.EXTRA_STREAM, contentUri)
         }.also {
-            startActivity(Intent.createChooser(it, "Share audio file"))
+            startActivity(Intent.createChooser(it, Constant.INTENT_SHARE_AUDIO_FILE))
         }
     }
 
