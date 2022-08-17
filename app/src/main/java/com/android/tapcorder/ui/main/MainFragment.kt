@@ -35,10 +35,12 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     private val messageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            with(Uri.parse(intent.getStringExtra(INTENT_AUDIO_FILE))) {
-                Log.e(TAG, "onReceive - $this")
-                audioRVAdapter.addItem(this)
+            if (App.getCurrentActivity().isDestroyed) {
+                return
             }
+
+            viewBinding.emptyText.isVisible = false
+            audioRVAdapter.addItem(Uri.parse(intent.getStringExtra(INTENT_AUDIO_FILE)))
         }
     }
 

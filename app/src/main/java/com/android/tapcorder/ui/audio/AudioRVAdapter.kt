@@ -1,6 +1,7 @@
 package com.android.tapcorder.ui.audio
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.tapcorder.R
+import com.android.tapcorder.util.ExtensionUtil.TAG
 import com.android.tapcorder.util.FileUtil
 import java.io.File
 import java.lang.String.valueOf
@@ -35,6 +37,7 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
     @Synchronized
     fun addItem(uri: Uri) {
+        Log.i(TAG, "addItem - $uri")
         audioDataList.add(uri)
         notifyItemInserted(itemCount)
     }
