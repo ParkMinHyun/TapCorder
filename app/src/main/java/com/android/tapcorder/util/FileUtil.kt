@@ -2,6 +2,7 @@ package com.android.tapcorder.util
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Environment
 import androidx.core.content.FileProvider
 import com.android.tapcorder.App
 import com.android.tapcorder.data.audio.AudioData
@@ -17,7 +18,7 @@ class FileUtil {
     companion object {
         private const val DEFAULT_FILE_NAME = "지나간 음성"
         val TEMP_FILE_DIR = App.getContext().getExternalFilesDir("/")!!.absolutePath
-        val SAVE_FILE_DIR = "$TEMP_FILE_DIR/result/"
+        val SAVE_FILE_DIR = Environment.getExternalStorageDirectory().toString() + "/DCIM/MoMember/"
 
         @SuppressLint("SimpleDateFormat")
         fun createTempFilePath() = "$TEMP_FILE_DIR/${SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss").format(Date())}.mp3"
