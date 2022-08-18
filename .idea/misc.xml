@@ -14,12 +14,14 @@
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/drawable/seek_tumb.xml" value="0.313" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/drawable/seekbar.xml" value="0.313" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/fragment_audio_player.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/fragment_audio_setting.xml" value="0.2921875" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/fragment_main.xml" value="0.33" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/fragment_setting.xml" value="0.3104166666666667" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/item_audio.xml" value="0.391304347826087" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/layout_audio_holder.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/layout_audio_holder_player.xml" value="0.33" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/layout_audio_holder_title.xml" value="0.2947916666666667" />
+        <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/layout_audio_setting_holder.xml" value="0.2921875" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/layout_first.xml" value="0.5221920289855072" />
         <entry key="..\:/Users/algus/Documents/tapcorder/app/src/main/res/layout/layout_second.xml" value="0.5221920289855072" />
       </map>
