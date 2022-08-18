@@ -13,13 +13,18 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer? = null
 
     private val _recordedAudioLiveData = MutableLiveData<Uri>()
     val recordedAudioLiveData = _recordedAudioLiveData
 
+    @Synchronized
     fun playAudio(file: File, onCompleted: () -> Unit) {
         Log.d(TAG, "playAudio ${file.name}")
+
+        if (mediaPlayer?.isPlaying == true) {
+            stopAudio()
+        }
 
         mediaPlayer = MediaPlayer().apply {
             setOnCompletionListener { onCompleted.invoke() }
@@ -29,8 +34,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    @Synchronized
     fun stopAudio() {
-        mediaPlayer.stop()
-        mediaPlayer.reset()
+        Log.d(TAG, "stopAudio")
+
+        mediaPlayer?.stop()
+        mediaPlayer?.reset()
     }
 }
