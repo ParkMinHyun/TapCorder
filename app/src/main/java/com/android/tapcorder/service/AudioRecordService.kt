@@ -126,11 +126,11 @@ class AudioRecordService: Service() {
                 File(audioFilePath).copyTo(File(saveFilePath))
                 File(audioFilePath).delete()
 
-                Log.i(TAG, "saveAudioRecord - $saveFilePath is saved")
+                Log.i(TAG, "saveAudioRecord - $saveFilePath(${recordTime}s) is saved")
 
                 AudioDB.insertAudioData(AudioData(
                     saveFileName,
-                    SettingRepository.audioRecordTime,
+                    recordTime,
                     saveFileDate)
                 )
 

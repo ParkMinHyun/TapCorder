@@ -6,12 +6,20 @@ import com.android.tapcorder.util.ExtensionUtil.TAG
 import com.android.tapcorder.util.FileUtil
 import java.io.File
 import java.io.IOException
+import kotlin.math.roundToInt
 
 class AudioRecorder(
     private val recorderTaskCallback: TaskCallback
 ) {
     private var mediaRecorder: MediaRecorder? = null
     val audioFilePath: String = FileUtil.createTempFilePath()
+
+    private var startTime: Long = 0L
+    private var endTime: Long = 0L
+    val recordTime: Int by lazy {
+        val duration = (endTime - startTime) / 1000f
+        duration.roundToInt()
+    }
 
     fun startRecording() {
         Log.d(TAG, "startRecording($audioFilePath)")
@@ -33,6 +41,7 @@ class AudioRecorder(
             File(audioFilePath).delete()
         }
 
+        startTime = System.currentTimeMillis()
         mediaRecorder?.start()
     }
 
@@ -43,6 +52,7 @@ class AudioRecorder(
         mediaRecorder?.release()
         mediaRecorder = null
 
+        endTime = System.currentTimeMillis()
         recorderTaskCallback.onRecordCompleted()
     }
 
