@@ -93,15 +93,22 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             setItemClickListener(object : AudioRVAdapter.ItemClickListener {
                 override fun onExpanded(view: View?, position: Int) {
                     for (index in 0 until viewBinding.recyclerview.childCount) {
-                        if (position == index) continue
-                        val holder = viewBinding.recyclerview.findViewHolderForAdapterPosition(index)
-                        audioRVAdapter.collapsedHolder(holder as AudioRVAdapter.AudioHolder)
+                        if (position == index) {
+                            continue
+                        }
+
+                        viewBinding.recyclerview.findViewHolderForAdapterPosition(index).let {
+                            audioRVAdapter.collapsedHolder(it as AudioRVAdapter.AudioHolder)
+                        }
                     }
 
                     val audioData = audioRVAdapter.audioDataList[position]
                     val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioData.name
                     viewModel.playAudio(File(audioFilePath)) {
                         viewModel.stopAudio()
+                        viewBinding.recyclerview.findViewHolderForAdapterPosition(position).let {
+                            (it as AudioRVAdapter.AudioHolder).collapseView()
+                        }
                     }
                 }
 
