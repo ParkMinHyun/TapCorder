@@ -63,6 +63,15 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     }
 
     @Synchronized
+    fun replaceItem(position: Int, audioData: AudioData) {
+        val oldAudioData = audioDataList[position]
+        AudioRepository.deleteAudioData(oldAudioData)
+        AudioRepository.insertAudioData(audioData)
+        audioDataList[position] = audioData
+        notifyItemChanged(position)
+    }
+
+    @Synchronized
     override fun getItemCount(): Int {
         return audioDataList.size
     }

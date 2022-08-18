@@ -38,5 +38,14 @@ class FileUtil {
                 e.printStackTrace()
             }
         }
+
+        fun renameFile(filePath: String, from: String, to: String): File {
+            val src = File(filePath, from)
+            val dest = File(filePath, to)
+            if (src.exists()) {
+                src.renameTo(dest)
+            }
+            return dest
+        }
     }
 }

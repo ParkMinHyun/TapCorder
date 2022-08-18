@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,7 @@ import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.repository.AudioRepository
 import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.ui.audio.AudioDialogFragment
+import com.android.tapcorder.ui.audio.AudioNameChangeDialog
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
 import com.android.tapcorder.util.ExtensionUtil.TAG
@@ -145,7 +147,24 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     }
 
     private fun changeAudioFileName(position: Int) {
+        AudioNameChangeDialog().apply {
+            setAudioNameChangeDialogListener(object: AudioNameChangeDialog.AudioNameChangeDialogListener{
+                override fun onDialogPositiveClick(name: String) {
+                    val audioFilePath = FileUtil.SAVE_FILE_DIR + "/"
+                    val from = audioRVAdapter.audioDataList[position].name
+                    val to = "$name.mp3"
+                    val newFile = FileUtil.renameFile(audioFilePath, from, to)
 
+                    audioRVAdapter.replaceItem(position, AudioData(
+                        newFile.name,
+                        audioRVAdapter.audioDataList[position].duration,
+                        audioRVAdapter.audioDataList[position].date
+                    ))
+
+                    Log.i(TAG, "renameAudioFile - $to is saved")
+                }
+            })
+        }.show(childFragmentManager, TAG)
     }
 
     private fun shareAudioFile(audioData: AudioData) {
