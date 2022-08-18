@@ -3,14 +3,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="65dp"
     android:background="@color/lite_gray"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_marginTop="2dp"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:orientation="horizontal">
 
         <com.android.tapcorder.ui.custom.ScalableImageButton

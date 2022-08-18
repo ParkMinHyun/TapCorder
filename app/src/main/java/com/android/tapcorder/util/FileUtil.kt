@@ -14,7 +14,7 @@ class FileUtil {
         val SAVE_FILE_DIR = "$TEMP_FILE_DIR/result/"
 
         @SuppressLint("SimpleDateFormat")
-        fun createTempFilePath() = "$TEMP_FILE_DIR/${SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format(Date())}.mp3"
+        fun createTempFilePath() = "$TEMP_FILE_DIR/${SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss").format(Date())}.mp3"
 
         fun createSaveFilePath(): String {
             var index = 1
