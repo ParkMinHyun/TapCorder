@@ -7,9 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import android.view.View
-import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,9 +18,7 @@ import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
 import com.android.tapcorder.base.BaseFragment
 import com.android.tapcorder.data.audio.AudioData
 import com.android.tapcorder.databinding.FragmentMainBinding
-import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.repository.AudioRepository
-import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.ui.audio.AudioDialogFragment
 import com.android.tapcorder.ui.audio.AudioNameChangeDialog
 import com.android.tapcorder.ui.audio.AudioRVAdapter
@@ -80,11 +76,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             SettingDialogFragment().apply {
                 setSettingCallback(object : SettingDialogFragment.SettingCallback{
                     override fun onStarted() {
-                        startService()
+                        viewModel.startRecordService()
                     }
 
                     override fun onStopped() {
-                        stopService()
+                        viewModel.stopRecordService()
                     }
                 })
             }.show(childFragmentManager, settingDialogTag)
@@ -122,7 +118,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                             }
 
                             override fun onDialogShareClick() {
-                                shareAudioFile(audioRVAdapter.audioDataList[position])
+                                val audioData = audioRVAdapter.audioDataList[position]
+                                val contentUri = FileUtil.getContentUri(audioData)
+
+                                Intent(Intent.ACTION_SEND).apply {
+                                    type = "audio/*"
+                                    putExtra(Intent.EXTRA_STREAM, contentUri)
+                                }.also {
+                                    activity?.startActivity(Intent.createChooser(it, Constant.INTENT_SHARE_AUDIO_FILE))
+                                }
                             }
 
                             override fun onDialogRemoveClick() {
@@ -167,43 +171,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         }.show(childFragmentManager, TAG)
     }
 
-    private fun shareAudioFile(audioData: AudioData) {
-        val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioData.name
-        val internalFile = File(audioFilePath)
-        val contentUri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", internalFile)
-
-        Intent(Intent.ACTION_SEND).apply {
-            type = "audio/*"
-            putExtra(Intent.EXTRA_STREAM, contentUri)
-        }.also {
-            startActivity(Intent.createChooser(it, Constant.INTENT_SHARE_AUDIO_FILE))
-        }
-    }
-
     private fun removeAudioFile(position: Int) {
         val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioRVAdapter.audioDataList[position].name
         FileUtil.deleteFilePath(audioFilePath)
         audioRVAdapter.removeItem(position)
-    }
-
-    private fun startService() {
-        Log.i(TAG, "Audio Recording Started")
-
-        activity?.startForegroundService(
-            Intent(activity, AudioRecordService::class.java).apply {
-                action = NotificationAction.START
-            }
-        )
-    }
-
-    private fun stopService() {
-        Log.i(TAG, "Audio Recording Stopped")
-
-        activity?.startForegroundService(
-            Intent(activity, AudioRecordService::class.java).apply {
-                action = NotificationAction.STOP
-            }
-        )
     }
 
     override fun onDestroyView() {

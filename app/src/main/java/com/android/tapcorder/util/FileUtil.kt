@@ -1,7 +1,10 @@
 package com.android.tapcorder.util
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import androidx.core.content.FileProvider
 import com.android.tapcorder.App
+import com.android.tapcorder.data.audio.AudioData
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -46,6 +49,13 @@ class FileUtil {
                 src.renameTo(dest)
             }
             return dest
+        }
+
+        fun getContentUri(audioData: AudioData): Uri? {
+            val context = App.getContext()
+            val audioFilePath = SAVE_FILE_DIR + "/" + audioData.name
+            val internalFile = File(audioFilePath)
+            return FileProvider.getUriForFile(context, "${context.packageName}.provider", internalFile)
         }
     }
 }
