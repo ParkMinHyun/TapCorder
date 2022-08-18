@@ -1,12 +1,17 @@
 package com.android.tapcorder.ui.audio
 
 import android.app.Dialog
+import android.content.Context
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.tapcorder.R
 import com.android.tapcorder.databinding.FragmentAudioSettingBinding
 
 class AudioDialogFragment : DialogFragment() {
@@ -37,7 +42,7 @@ class AudioDialogFragment : DialogFragment() {
                     orientation = LinearLayoutManager.VERTICAL
                 }
             }
-            val builder = AlertDialog.Builder(it)
+            val builder = AlertDialog.Builder(it, R.style.WrapContentDialog)
             builder.setView(binding.root)
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
