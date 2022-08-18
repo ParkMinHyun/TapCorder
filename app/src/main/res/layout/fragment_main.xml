@@ -19,7 +19,7 @@
         tools:ignore="MissingConstraints">
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
-            android:layout_width="140dp"
+            android:layout_width="130dp"
             android:layout_height="50dp"
             android:background="@drawable/logo"
             tools:ignore="MissingConstraints" />
