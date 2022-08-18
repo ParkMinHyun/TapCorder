@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.android.tapcorder.R
 import com.android.tapcorder.data.audio.AudioData
@@ -26,8 +27,8 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     val boundViewHolders = Collections.unmodifiableSet(_boundViewHolders)
 
     private lateinit var itemClickListener: ItemClickListener
-    private lateinit var itemLongClickListener: ItemLongClickListener
     private lateinit var seekBarTouchListener: SeekBarTouchListener
+    private lateinit var audioSettingListener: AudioSettingListener
 
     init {
         for (audioData in AudioRepository.getSavedAudioData()) {
@@ -98,12 +99,12 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         this.itemClickListener = itemClickedListener
     }
 
-    fun setItemLongClickListener(itemLongClickListener: ItemLongClickListener) {
-        this.itemLongClickListener = itemLongClickListener
-    }
-
     fun setSeekBarTouchListener(seekBarTouchListener: SeekBarTouchListener) {
         this.seekBarTouchListener = seekBarTouchListener
+    }
+
+    fun setAudioSettingListener(audioSettingListener: AudioSettingListener) {
+        this.audioSettingListener = audioSettingListener
     }
 
     interface ItemClickListener {
@@ -112,27 +113,41 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         fun onCollapsed(view: View?, position: Int)
     }
 
-    interface ItemLongClickListener {
-        fun onItemLongClick(view: View?, position: Int)
-    }
-
     interface SeekBarTouchListener {
         fun onStartTrackingTouch()
 
         fun onStopTrackingTouch(progress: Int)
     }
 
+    interface AudioSettingListener {
+        fun onAudioRenameTouch(adapterPosition: Int)
+
+        fun onAudioShareTouch(adapterPosition: Int)
+
+        fun onAudioDeleteTouch(adapterPosition: Int)
+    }
+
     inner class AudioHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var audioSettingView: View
+        var audioPlayerView: View
+
         var holderTitleView: View
         var audioImage: ScalableImageButton
         var audioName: TextView
         var audioDuration: TextView
         var audioDate: TextView
         var expandableLayout: ExpandableLayout
+
         var playerProgressBar: SeekBar
         var playerDuration: TextView
+
+        var audioNameReviseView: View
+        var audioShareView: View
+        var audioDeleteView: View
+
         lateinit var audioData: AudioData
 
+        var isLongPressed = false
         init {
             holderTitleView = itemView.findViewById(R.id.holder_title_view)
             expandableLayout = itemView.findViewById(R.id.expandable_layout)
@@ -141,8 +156,15 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
             audioDuration = itemView.findViewById(R.id.audio_duration)
             audioDate = itemView.findViewById(R.id.audio_date)
 
+            audioSettingView = itemView.findViewById(R.id.audio_setting_view)
+            audioPlayerView = itemView.findViewById(R.id.player_view)
+
             playerProgressBar = itemView.findViewById(R.id.player_seekbar)
             playerDuration = itemView.findViewById(R.id.player_duration)
+
+            audioNameReviseView = itemView.findViewById(R.id.audio_name_revise)
+            audioShareView = itemView.findViewById(R.id.audio_share_view)
+            audioDeleteView = itemView.findViewById(R.id.audio_delete_view)
 
             setUpHolderViews()
         }
@@ -152,11 +174,14 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
             holderTitleView.setOnClickListener { processViewClickEvent(it) }
             holderTitleView.setOnLongClickListener { view ->
-                val pos = adapterPosition
-                if (pos != RecyclerView.NO_POSITION) {
-                    itemLongClickListener.onItemLongClick(view, pos)
+                if (!isLongPressed) {
+                    audioPlayerView.isVisible = false
+                    audioSettingView.isVisible = true
+
+                    isLongPressed = true
+                    expandableLayout.expand()
                 }
-                false
+                true
             }
 
             playerProgressBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
@@ -170,9 +195,27 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
                     seekBarTouchListener.onStopTrackingTouch(seekBar.progress)
                 }
             })
+
+            audioNameReviseView.setOnClickListener {
+                audioSettingListener.onAudioRenameTouch(adapterPosition)
+            }
+            audioShareView.setOnClickListener {
+                audioSettingListener.onAudioShareTouch(adapterPosition)
+            }
+            audioDeleteView.setOnClickListener {
+                audioSettingListener.onAudioDeleteTouch(adapterPosition)
+            }
         }
 
         private fun processViewClickEvent(view: View) {
+            if (isLongPressed) {
+                isLongPressed = false
+                expandableLayout.collapse()
+                audioSettingView.isVisible = false
+                return
+            }
+
+            audioPlayerView.isVisible = true
             if (expandableLayout.isExpanded) {
                 collapseView()
                 itemClickListener.onCollapsed(view, adapterPosition)

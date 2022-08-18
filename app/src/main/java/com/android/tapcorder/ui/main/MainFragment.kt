@@ -20,7 +20,6 @@ import com.android.tapcorder.data.audio.AudioData
 import com.android.tapcorder.data.player.PlayerDuration
 import com.android.tapcorder.databinding.FragmentMainBinding
 import com.android.tapcorder.repository.AudioRepository
-import com.android.tapcorder.ui.audio.AudioDialogFragment
 import com.android.tapcorder.ui.audio.AudioNameChangeDialog
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
@@ -115,33 +114,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     viewModel.stopAudio()
                 }
             })
-            setItemLongClickListener(object: AudioRVAdapter.ItemLongClickListener {
-                override fun onItemLongClick(view: View?, position: Int) {
-                    AudioDialogFragment().apply {
-                        setAudioDialogListener(object: AudioDialogFragment.AudioDialogListener{
-                            override fun onDialogChangeNameClick() {
-                                changeAudioFileName(position)
-                            }
-
-                            override fun onDialogShareClick() {
-                                val audioData = audioRVAdapter.audioDataList[position]
-                                val contentUri = FileUtil.getContentUri(audioData)
-
-                                Intent(Intent.ACTION_SEND).apply {
-                                    type = "audio/*"
-                                    putExtra(Intent.EXTRA_STREAM, contentUri)
-                                }.also {
-                                    activity?.startActivity(Intent.createChooser(it, Constant.INTENT_SHARE_AUDIO_FILE))
-                                }
-                            }
-
-                            override fun onDialogRemoveClick() {
-                                removeAudioFile(position)
-                            }
-                        })
-                    }.show(childFragmentManager, TAG)
-                }
-            })
             setSeekBarTouchListener(object : AudioRVAdapter.SeekBarTouchListener{
                 override fun onStartTrackingTouch() {
                     viewModel.pauseAudio()
@@ -149,6 +121,28 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
                 override fun onStopTrackingTouch(progress: Int) {
                     viewModel.moveAudioPosition(progress)
+                }
+
+            })
+            setAudioSettingListener(object : AudioRVAdapter.AudioSettingListener{
+                override fun onAudioRenameTouch(adapterPosition: Int) {
+                    changeAudioFileName(adapterPosition)
+                }
+
+                override fun onAudioShareTouch(adapterPosition: Int) {
+                    val audioData = audioRVAdapter.audioDataList[adapterPosition]
+                    val contentUri = FileUtil.getContentUri(audioData)
+
+                    Intent(Intent.ACTION_SEND).apply {
+                        type = "audio/*"
+                        putExtra(Intent.EXTRA_STREAM, contentUri)
+                    }.also {
+                        activity?.startActivity(Intent.createChooser(it, Constant.INTENT_SHARE_AUDIO_FILE))
+                    }
+                }
+
+                override fun onAudioDeleteTouch(adapterPosition: Int) {
+                    removeAudioFile(adapterPosition)
                 }
 
             })

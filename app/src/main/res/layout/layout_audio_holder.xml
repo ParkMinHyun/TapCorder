@@ -19,7 +19,7 @@
         app:expandable_duration="200"
         app:expandable_isExpanded="false"
         app:expandable_parentLayout="@layout/layout_audio_holder_title"
-        app:expandable_secondLayout="@layout/layout_audio_holder_player" />
+        app:expandable_secondLayout="@layout/layout_audio_holder_content" />
 
     <View
         android:layout_width="match_parent"
