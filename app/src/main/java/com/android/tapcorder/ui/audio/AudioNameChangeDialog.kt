@@ -12,6 +12,7 @@ class AudioNameChangeDialog: DialogFragment() {
     private val binding get() = _binding!!
 
     private var listener: AudioNameChangeDialogListener? = null
+    private var hint: String = "파일 이름"
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = FragmentAudioNameSettingBinding.inflate(LayoutInflater.from(context))
@@ -22,6 +23,7 @@ class AudioNameChangeDialog: DialogFragment() {
                 dismiss()
             }
             binding.btnCancel.setOnClickListener { _-> dismiss() }
+            binding.name.hint = hint
             builder.setTitle("음성 파일 이름 변경")
             builder.setView(binding.root)
             builder.create()
@@ -34,6 +36,10 @@ class AudioNameChangeDialog: DialogFragment() {
 
     fun setAudioNameChangeDialogListener(listener: AudioNameChangeDialogListener) {
         this.listener = listener
+    }
+
+    fun setHint(hint: String) {
+        this.hint = hint
     }
 
     override fun onDestroyView() {

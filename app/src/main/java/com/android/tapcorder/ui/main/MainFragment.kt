@@ -175,6 +175,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     Log.i(TAG, "renameAudioFile - $to is saved")
                 }
             })
+            setHint(audioRVAdapter.audioDataList[position].name.replace(".mp3", ""))
         }.show(childFragmentManager, TAG)
     }
 
