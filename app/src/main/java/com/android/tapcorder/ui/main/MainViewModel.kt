@@ -31,5 +31,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     fun stopAudio() {
         mediaPlayer.stop()
+        mediaPlayer.reset()
     }
 }

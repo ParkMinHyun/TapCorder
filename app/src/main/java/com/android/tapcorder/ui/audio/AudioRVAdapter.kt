@@ -18,8 +18,8 @@ import com.skydoves.expandablelayout.ExpandableLayout
 class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
     val audioDataList: ArrayList<AudioData> = arrayListOf()
-    private var listener: OnIconClickListener? = null
-    private var itemLongClickListener: OnItemLongClickListener? = null
+    private var itemClickListener: ItemClickListener? = null
+    private var itemLongClickListener: ItemLongClickListener? = null
 
     init {
         for (audioData in AudioDB.getSavedAudioData()) {
@@ -28,9 +28,9 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioHolder {
-        return AudioHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.layout_audio_holder, parent, false)
-        )
+        val inflater = LayoutInflater.from(parent.context)
+        val holderView = inflater.inflate(R.layout.layout_audio_holder, parent, false)
+        return AudioHolder(holderView)
     }
 
     @SuppressLint("SetTextI18n")
@@ -40,18 +40,6 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         holder.audioName.text = audioData.name.split('.').first()
         holder.audioDate.text = audioData.date
         holder.audioDuration.text = audioData.duration.toMinuteFormat()
-
-//        holder.expandableLayout.setOnExpandListener {
-//            App.showToast("expanded")
-//        }
-//
-        holder.expandableLayout.setOnClickListener {
-            if (holder.expandableLayout.isExpanded) {
-                holder.expandableLayout.collapse()
-            } else {
-                holder.expandableLayout.expand()
-            }
-        }
     }
 
     @Synchronized
@@ -70,28 +58,35 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         notifyItemRemoved(position)
     }
 
+    fun collapsedHolder(holder: AudioHolder) {
+        holder.collapseView()
+    }
+
     @Synchronized
     override fun getItemCount(): Int {
         return audioDataList.size
     }
 
-    fun setOnItemClickListener(listener: OnIconClickListener?) {
-        this.listener = listener
+    fun setItemClickListener(itemClickedListener: ItemClickListener?) {
+        this.itemClickListener = itemClickedListener
     }
 
-    fun setOnItemLongCLickListener(itemLongClickListener: OnItemLongClickListener?) {
+    fun setItemLongCLickListener(itemLongClickListener: ItemLongClickListener?) {
         this.itemLongClickListener = itemLongClickListener
     }
 
-    interface OnIconClickListener {
-        fun onItemClick(view: View?, position: Int)
+    interface ItemClickListener {
+        fun onExpanded(view: View?, position: Int)
+
+        fun onCollapsed(view: View?, position: Int)
     }
 
-    interface OnItemLongClickListener {
+    interface ItemLongClickListener {
         fun onItemLongClick(view: View?, position: Int)
     }
 
     inner class AudioHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var holderTitleView: View
         var audioImage: ScalableImageButton
         var audioName: TextView
         var audioDuration: TextView
@@ -99,18 +94,14 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         var expandableLayout: ExpandableLayout
 
         init {
+            holderTitleView = itemView.findViewById(R.id.holder_title_view)
             expandableLayout = itemView.findViewById(R.id.expandable_layout)
             audioImage = itemView.findViewById(R.id.audio_state_image)
             audioName = itemView.findViewById(R.id.audio_name)
             audioDuration = itemView.findViewById(R.id.audio_duration)
             audioDate = itemView.findViewById(R.id.audio_date)
 
-            audioImage.setOnClickListener { view ->
-                val pos = adapterPosition
-                if (pos != RecyclerView.NO_POSITION) {
-                    listener?.onItemClick(view, pos)
-                }
-            }
+            setUpExpandableView()
             expandableLayout.setOnLongClickListener { view ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
@@ -118,6 +109,28 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
                 }
                 false
             }
+        }
+
+        private fun setUpExpandableView() {
+            holderTitleView.setOnClickListener { view ->
+                if (expandableLayout.isExpanded) {
+                    collapseView()
+                    itemClickListener?.onCollapsed(view, adapterPosition)
+                } else {
+                    expandView()
+                    itemClickListener?.onExpanded(view, adapterPosition)
+                }
+            }
+        }
+
+        fun collapseView() {
+            expandableLayout.collapse()
+            audioImage.setBackgroundResource(R.drawable.ic_play)
+        }
+
+        fun expandView() {
+            expandableLayout.expand()
+            audioImage.setBackgroundResource(R.drawable.ic_pause)
         }
     }
 }

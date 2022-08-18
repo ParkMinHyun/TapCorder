@@ -78,12 +78,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             SettingDialogFragment().apply {
                 setSettingCallback(object : SettingDialogFragment.SettingCallback{
                     override fun onStarted() {
-                        Log.i(TAG, "Audio Recording Started")
                         startService()
                     }
 
                     override fun onStopped() {
-                        Log.i(TAG, "Audio Recording Stopped")
                         stopService()
                     }
                 })
@@ -94,25 +92,26 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun setUpAudioRecyclerView() {
         audioRVAdapter = AudioRVAdapter().apply {
-            setOnItemClickListener(object : AudioRVAdapter.OnIconClickListener {
-                var playIndex: Int? = null
-                override fun onItemClick(view: View?, position: Int) {
-                    if (playIndex != null) {
-                        Log.i(TAG, "Audio already playing")
-                        return
+            setItemClickListener(object : AudioRVAdapter.ItemClickListener {
+                override fun onExpanded(view: View?, position: Int) {
+                    for (index in 0 until viewBinding.recyclerview.childCount) {
+                        if (position == index) continue
+                        val holder = viewBinding.recyclerview.findViewHolderForAdapterPosition(index)
+                        audioRVAdapter.collapsedHolder(holder as AudioRVAdapter.AudioHolder)
                     }
 
-                    playIndex = position
                     val audioData = audioRVAdapter.audioDataList[position]
                     val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioData.name
-
                     viewModel.playAudio(File(audioFilePath)) {
-                        playIndex = null
                         viewModel.stopAudio()
                     }
                 }
+
+                override fun onCollapsed(view: View?, position: Int) {
+                    viewModel.stopAudio()
+                }
             })
-            setOnItemLongCLickListener(object: AudioRVAdapter.OnItemLongClickListener {
+            setItemLongCLickListener(object: AudioRVAdapter.ItemLongClickListener {
                 override fun onItemLongClick(view: View?, position: Int) {
                     AudioDialogFragment().apply {
                         setAudioDialogListener(object: AudioDialogFragment.AudioDialogListener{
@@ -169,6 +168,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     }
 
     private fun startService() {
+        Log.i(TAG, "Audio Recording Started")
+
         activity?.startForegroundService(
             Intent(activity, AudioRecordService::class.java).apply {
                 action = NotificationAction.START
@@ -177,6 +178,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     }
 
     private fun stopService() {
+        Log.i(TAG, "Audio Recording Stopped")
+
         activity?.startForegroundService(
             Intent(activity, AudioRecordService::class.java).apply {
                 action = NotificationAction.STOP
