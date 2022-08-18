@@ -115,7 +115,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     viewModel.stopAudio()
                 }
             })
-            setItemLongCLickListener(object: AudioRVAdapter.ItemLongClickListener {
+            setItemLongClickListener(object: AudioRVAdapter.ItemLongClickListener {
                 override fun onItemLongClick(view: View?, position: Int) {
                     AudioDialogFragment().apply {
                         setAudioDialogListener(object: AudioDialogFragment.AudioDialogListener{
@@ -141,6 +141,16 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                         })
                     }.show(childFragmentManager, TAG)
                 }
+            })
+            setSeekBarTouchListener(object : AudioRVAdapter.SeekBarTouchListener{
+                override fun onStartTrackingTouch() {
+                    viewModel.pauseAudio()
+                }
+
+                override fun onStopTrackingTouch(progress: Int) {
+                    viewModel.moveAudioPosition(progress)
+                }
+
             })
         }
 

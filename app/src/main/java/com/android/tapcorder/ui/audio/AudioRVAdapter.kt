@@ -25,8 +25,9 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     private var _boundViewHolders = HashSet<AudioHolder>()
     val boundViewHolders = Collections.unmodifiableSet(_boundViewHolders)
 
-    private var itemClickListener: ItemClickListener? = null
-    private var itemLongClickListener: ItemLongClickListener? = null
+    private lateinit var itemClickListener: ItemClickListener
+    private lateinit var itemLongClickListener: ItemLongClickListener
+    private lateinit var seekBarTouchListener: SeekBarTouchListener
 
     init {
         for (audioData in AudioRepository.getSavedAudioData()) {
@@ -93,12 +94,16 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
         return audioDataList.size
     }
 
-    fun setItemClickListener(itemClickedListener: ItemClickListener?) {
+    fun setItemClickListener(itemClickedListener: ItemClickListener) {
         this.itemClickListener = itemClickedListener
     }
 
-    fun setItemLongCLickListener(itemLongClickListener: ItemLongClickListener?) {
+    fun setItemLongClickListener(itemLongClickListener: ItemLongClickListener) {
         this.itemLongClickListener = itemLongClickListener
+    }
+
+    fun setSeekBarTouchListener(seekBarTouchListener: SeekBarTouchListener) {
+        this.seekBarTouchListener = seekBarTouchListener
     }
 
     interface ItemClickListener {
@@ -109,6 +114,12 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
     interface ItemLongClickListener {
         fun onItemLongClick(view: View?, position: Int)
+    }
+
+    interface SeekBarTouchListener {
+        fun onStartTrackingTouch()
+
+        fun onStopTrackingTouch(progress: Int)
     }
 
     inner class AudioHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -143,19 +154,31 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
             holderTitleView.setOnLongClickListener { view ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
-                    itemLongClickListener?.onItemLongClick(view, pos)
+                    itemLongClickListener.onItemLongClick(view, pos)
                 }
                 false
             }
+
+            playerProgressBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                    seekBarTouchListener.onStartTrackingTouch()
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                    seekBarTouchListener.onStopTrackingTouch(seekBar.progress)
+                }
+            })
         }
 
         private fun processViewClickEvent(view: View) {
             if (expandableLayout.isExpanded) {
                 collapseView()
-                itemClickListener?.onCollapsed(view, adapterPosition)
+                itemClickListener.onCollapsed(view, adapterPosition)
             } else {
                 expandView()
-                itemClickListener?.onExpanded(view, adapterPosition)
+                itemClickListener.onExpanded(view, adapterPosition)
             }
         }
 
