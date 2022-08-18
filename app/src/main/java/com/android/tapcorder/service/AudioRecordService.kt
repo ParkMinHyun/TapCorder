@@ -8,11 +8,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.tapcorder.App
 import com.android.tapcorder.Constant.INTENT_AUDIO_DATA
 import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
-import com.android.tapcorder.data.AudioDB
-import com.android.tapcorder.data.AudioData
+import com.android.tapcorder.data.audio.AudioData
 import com.android.tapcorder.device.AudioRecorder
 import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.notification.NotificationCreator
+import com.android.tapcorder.repository.AudioRepository
 import com.android.tapcorder.repository.SettingRepository
 import com.android.tapcorder.util.ExtensionUtil.TAG
 import com.android.tapcorder.util.FileUtil
@@ -128,7 +128,8 @@ class AudioRecordService: Service() {
 
                 Log.i(TAG, "saveAudioRecord - $saveFilePath(${recordTime}s) is saved")
 
-                AudioDB.insertAudioData(AudioData(
+                AudioRepository.insertAudioData(
+                    AudioData(
                     saveFileName,
                     recordTime,
                     saveFileDate)

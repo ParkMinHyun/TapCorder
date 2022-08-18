@@ -38,16 +38,5 @@ class FileUtil {
                 e.printStackTrace()
             }
         }
-
-//            val audioData = AudioDB.getInstance().audioDao().getAll()
-//            if (!File(SAVE_FILE_DIR).exists()) {
-//                File(SAVE_FILE_DIR).mkdir()
-//            }
-//
-//            File(SAVE_FILE_DIR).listFiles()?.forEach {
-//                Log.v(TAG, "${it.name} - ${it.length()}")
-//                add(Uri.parse("$SAVE_FILE_DIR/${it.name}"))
-//            }
-//        }
     }
 }

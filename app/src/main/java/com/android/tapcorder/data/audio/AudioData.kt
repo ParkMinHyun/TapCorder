@@ -1,4 +1,4 @@
-package com.android.tapcorder.data
+package com.android.tapcorder.data.audio
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

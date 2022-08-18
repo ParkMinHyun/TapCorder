@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.tapcorder.R
-import com.android.tapcorder.data.AudioDB
-import com.android.tapcorder.data.AudioData
+import com.android.tapcorder.data.audio.AudioData
+import com.android.tapcorder.repository.AudioRepository
 import com.android.tapcorder.ui.custom.ScalableImageButton
 import com.android.tapcorder.util.ExtensionUtil.TAG
 import com.android.tapcorder.util.ExtensionUtil.toMinuteFormat
@@ -22,7 +22,7 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     private var itemLongClickListener: ItemLongClickListener? = null
 
     init {
-        for (audioData in AudioDB.getSavedAudioData()) {
+        for (audioData in AudioRepository.getSavedAudioData()) {
             audioDataList.add(0, audioData)
         }
     }
@@ -53,7 +53,7 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     @Synchronized
     fun removeItem(position: Int) {
         val audioData = audioDataList[position]
-        AudioDB.deleteAudioData(audioData)
+        AudioRepository.deleteAudioData(audioData)
         audioDataList.remove(audioData)
         notifyItemRemoved(position)
     }

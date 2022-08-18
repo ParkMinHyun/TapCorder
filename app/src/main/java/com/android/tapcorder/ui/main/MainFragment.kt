@@ -17,10 +17,10 @@ import com.android.tapcorder.Constant
 import com.android.tapcorder.Constant.INTENT_AUDIO_DATA
 import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
 import com.android.tapcorder.base.BaseFragment
-import com.android.tapcorder.data.AudioDB
-import com.android.tapcorder.data.AudioData
+import com.android.tapcorder.data.audio.AudioData
 import com.android.tapcorder.databinding.FragmentMainBinding
 import com.android.tapcorder.notification.NotificationAction
+import com.android.tapcorder.repository.AudioRepository
 import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.ui.audio.AudioDialogFragment
 import com.android.tapcorder.ui.audio.AudioRVAdapter
@@ -43,7 +43,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             val data = intent.getStringExtra(INTENT_AUDIO_DATA)!!
 
             Log.i(TAG, "onReceive - $data")
-            audioRVAdapter.addItem(AudioDB.getAudioData(data))
+            audioRVAdapter.addItem(AudioRepository.getAudioData(data))
 
             view?.post {
                 viewBinding.emptyText.isVisible = false
