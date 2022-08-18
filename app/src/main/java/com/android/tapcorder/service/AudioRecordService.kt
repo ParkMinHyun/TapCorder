@@ -116,6 +116,10 @@ class AudioRecordService: Service() {
         Log.d(TAG, "saveAudioRecord")
 
         synchronized(serviceLock) {
+            if (audioRecorderQueue.isEmpty()) {
+                return
+            }
+
             with(audioRecorderQueue.pop()) {
                 stopRecording()
 
