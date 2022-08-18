@@ -101,22 +101,14 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
             audioDuration = itemView.findViewById(R.id.audio_duration)
             audioDate = itemView.findViewById(R.id.audio_date)
 
-            setUpClickableViews()
-            setUpExpandableView()
+            setUpHolderViews()
         }
 
-        private fun setUpClickableViews() {
-            audioImage.setOnClickListener { view ->
-                processViewClickEvent(view)
-            }
+        private fun setUpHolderViews() {
+            audioImage.setOnClickListener { processViewClickEvent(it) }
 
-            holderTitleView.setOnClickListener { view ->
-                processViewClickEvent(view)
-            }
-        }
-
-        private fun setUpExpandableView() {
-            expandableLayout.setOnLongClickListener { view ->
+            holderTitleView.setOnClickListener { processViewClickEvent(it) }
+            holderTitleView.setOnLongClickListener { view ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
                     itemLongClickListener?.onItemLongClick(view, pos)
