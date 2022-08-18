@@ -2,55 +2,56 @@ package com.android.tapcorder.ui.main
 
 import android.content.Intent
 import android.media.MediaPlayer
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.tapcorder.App
+import com.android.tapcorder.data.player.PlayerDuration
 import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.service.AudioRecordService
 import com.android.tapcorder.util.ExtensionUtil.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var mediaPlayer: MediaPlayer
 
-    private val _recordedAudioLiveData = MutableLiveData<Uri>()
-    val recordedAudioLiveData = _recordedAudioLiveData
+    private val _audioPlayLiveData = MutableLiveData<PlayerDuration>()
+    val audioPlayLiveData = _audioPlayLiveData
 
-    fun startRecordService() {
+    fun startRecordService() = with(App.getContext()) {
         Log.d(TAG, "startRecordService")
 
-        with(App.getContext()) {
-            startForegroundService(Intent(this,
-                AudioRecordService::class.java).apply {
-                    action = NotificationAction.START
-                }
-            )
-        }
+        startForegroundService(
+            Intent(this, AudioRecordService::class.java).apply {
+                action = NotificationAction.START
+            }
+        )
     }
 
-    fun stopRecordService() {
-        Log.d(TAG, "stopRecordService")
+    fun stopRecordService() = with(App.getContext()) {
+        Log.d(TAG, "startRecordService")
 
-        with(App.getContext()) {
-            startForegroundService(
-                Intent(this, AudioRecordService::class.java).apply {
-                    action = NotificationAction.STOP
-                }
-            )
-        }
+        startForegroundService(
+            Intent(this, AudioRecordService::class.java).apply {
+                action = NotificationAction.STOP
+            }
+        )
     }
 
     @Synchronized
     fun playAudio(file: File, onCompleted: () -> Unit) {
         Log.d(TAG, "playAudio ${file.name}")
 
-        if (mediaPlayer?.isPlaying == true) {
+        if (this::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
             stopAudio()
         }
 
@@ -60,13 +61,22 @@ class MainViewModel @Inject constructor() : ViewModel() {
             prepare()
             start()
         }
+
+        viewModelScope.launch(Dispatchers.Default) {
+            while (mediaPlayer.isPlaying) {
+                delay(50)
+                withContext(Dispatchers.Main) {
+                    _audioPlayLiveData.value = PlayerDuration(mediaPlayer.currentPosition, mediaPlayer.duration)
+                }
+            }
+        }
     }
 
     @Synchronized
     fun stopAudio() {
         Log.d(TAG, "stopAudio")
 
-        mediaPlayer?.stop()
-        mediaPlayer?.reset()
+        mediaPlayer.stop()
+        mediaPlayer.reset()
     }
 }

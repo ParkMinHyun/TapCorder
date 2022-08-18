@@ -17,6 +17,7 @@ import com.android.tapcorder.Constant.INTENT_AUDIO_DATA
 import com.android.tapcorder.Constant.INTENT_NOTIFY_SAVE_AUDIO
 import com.android.tapcorder.base.BaseFragment
 import com.android.tapcorder.data.audio.AudioData
+import com.android.tapcorder.data.player.PlayerDuration
 import com.android.tapcorder.databinding.FragmentMainBinding
 import com.android.tapcorder.repository.AudioRepository
 import com.android.tapcorder.ui.audio.AudioDialogFragment
@@ -53,6 +54,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     override fun initView() {
         super.initView()
 
+        viewModel.audioPlayLiveData.observe(viewLifecycleOwner) { durationData ->
+            onAudioPlayProgressed(durationData)
+        }
         LocalBroadcastManager.getInstance(App.getCurrentActivity()).registerReceiver(
             messageReceiver, IntentFilter(INTENT_NOTIFY_SAVE_AUDIO)
         )
@@ -92,22 +96,17 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         audioRVAdapter = AudioRVAdapter().apply {
             setItemClickListener(object : AudioRVAdapter.ItemClickListener {
                 override fun onExpanded(view: View?, position: Int) {
-                    for (index in 0 until viewBinding.recyclerview.childCount) {
-                        if (position == index) {
-                            continue
-                        }
-
-                        viewBinding.recyclerview.findViewHolderForAdapterPosition(index).let {
-                            audioRVAdapter.collapsedHolder(it as AudioRVAdapter.AudioHolder)
-                        }
+                    for (holder in boundViewHolders) {
+                        if (holder.adapterPosition == position) continue
+                        holder.collapseView()
                     }
 
                     val audioData = audioRVAdapter.audioDataList[position]
                     val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioData.name
                     viewModel.playAudio(File(audioFilePath)) {
                         viewModel.stopAudio()
-                        viewBinding.recyclerview.findViewHolderForAdapterPosition(position).let {
-                            (it as AudioRVAdapter.AudioHolder).collapseView()
+                        for (holder in boundViewHolders) {
+                            holder.collapseView()
                         }
                     }
                 }
@@ -179,6 +178,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         }.show(childFragmentManager, TAG)
     }
 
+    private fun onAudioPlayProgressed(durationData: PlayerDuration) {
+        Log.w(TAG, "onAudioPlayProgressed $durationData")
+        audioRVAdapter.updateAudioProgress(durationData)
+    }
+
     private fun removeAudioFile(position: Int) {
         val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioRVAdapter.audioDataList[position].name
         FileUtil.deleteFilePath(audioFilePath)
@@ -188,6 +192,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     override fun onDestroyView() {
         super.onDestroyView()
 
-        viewModel.recordedAudioLiveData.removeObservers(viewLifecycleOwner)
+        viewModel.audioPlayLiveData.removeObservers(viewLifecycleOwner)
     }
 }

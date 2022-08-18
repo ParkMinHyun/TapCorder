@@ -21,6 +21,7 @@ class AudioRecorder(
         duration.roundToInt()
     }
 
+    @Synchronized
     fun startRecording() {
         Log.d(TAG, "startRecording($audioFilePath)")
 
@@ -45,8 +46,14 @@ class AudioRecorder(
         mediaRecorder?.start()
     }
 
+    @Synchronized
     fun stopRecording() {
         Log.d(TAG, "stopRecording($audioFilePath)")
+
+        // TODO error handling
+        if (System.currentTimeMillis() - startTime < 1000) {
+            return
+        }
 
         mediaRecorder?.stop()
         mediaRecorder?.release()
