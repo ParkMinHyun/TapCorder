@@ -235,6 +235,7 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
             audioImage.setBackgroundResource(R.drawable.ic_pause)
         }
 
+        @SuppressLint("SetTextI18n")
         fun updateAudioProgress(durationData: PlayerDuration) {
             if (!expandableLayout.isExpanded) {
                 return
@@ -242,6 +243,8 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
 
             playerProgressBar.max = durationData.totalDuration
             playerProgressBar.progress = durationData.currentDuration
+            val runningTime = audioData.duration * (1.0 * durationData.currentDuration / durationData.totalDuration)
+            playerDuration.text = "${runningTime.toInt().toMinuteFormat()}/${audioData.duration.toMinuteFormat()}"
         }
     }
 }
