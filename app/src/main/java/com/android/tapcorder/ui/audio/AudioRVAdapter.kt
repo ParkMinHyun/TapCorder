@@ -63,6 +63,14 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     }
 
     @Synchronized
+    fun removeItem(position: Int) {
+        val audioData = audioDataList[position]
+        AudioDB.deleteAudioData(audioData)
+        audioDataList.remove(audioData)
+        notifyItemRemoved(position)
+    }
+
+    @Synchronized
     override fun getItemCount(): Int {
         return audioDataList.size
     }
@@ -80,7 +88,7 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
     }
 
     interface OnItemLongClickListener {
-        fun onItemLongClickListener(view: View?, position: Int)
+        fun onItemLongClick(view: View?, position: Int)
     }
 
     inner class AudioHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -103,10 +111,10 @@ class AudioRVAdapter : RecyclerView.Adapter<AudioRVAdapter.AudioHolder>() {
                     listener?.onItemClick(view, pos)
                 }
             }
-            itemView.setOnLongClickListener { view ->
+            expandableLayout.setOnLongClickListener { view ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
-                    itemLongClickListener?.onItemLongClickListener(view, pos)
+                    itemLongClickListener?.onItemLongClick(view, pos)
                 }
                 false
             }

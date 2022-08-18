@@ -22,6 +22,7 @@ import com.android.tapcorder.data.AudioData
 import com.android.tapcorder.databinding.FragmentMainBinding
 import com.android.tapcorder.notification.NotificationAction
 import com.android.tapcorder.service.AudioRecordService
+import com.android.tapcorder.ui.audio.AudioDialogFragment
 import com.android.tapcorder.ui.audio.AudioRVAdapter
 import com.android.tapcorder.ui.setting.SettingDialogFragment
 import com.android.tapcorder.util.ExtensionUtil.TAG
@@ -112,8 +113,22 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 }
             })
             setOnItemLongCLickListener(object: AudioRVAdapter.OnItemLongClickListener {
-                override fun onItemLongClickListener(view: View?, position: Int) {
-                    shareAudioFile(audioRVAdapter.audioDataList[position])
+                override fun onItemLongClick(view: View?, position: Int) {
+                    AudioDialogFragment().apply {
+                        setAudioDialogListener(object: AudioDialogFragment.AudioDialogListener{
+                            override fun onDialogChangeNameClick() {
+                                changeAudioFileName(position)
+                            }
+
+                            override fun onDialogShareClick() {
+                                shareAudioFile(audioRVAdapter.audioDataList[position])
+                            }
+
+                            override fun onDialogRemoveClick() {
+                                removeAudioFile(position)
+                            }
+                        })
+                    }.show(childFragmentManager, TAG)
                 }
             })
         }
@@ -130,6 +145,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         }
     }
 
+    private fun changeAudioFileName(position: Int) {
+
+    }
+
     private fun shareAudioFile(audioData: AudioData) {
         val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioData.name
         val internalFile = File(audioFilePath)
@@ -141,6 +160,12 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         }.also {
             startActivity(Intent.createChooser(it, Constant.INTENT_SHARE_AUDIO_FILE))
         }
+    }
+
+    private fun removeAudioFile(position: Int) {
+        val audioFilePath = FileUtil.SAVE_FILE_DIR + "/" + audioRVAdapter.audioDataList[position].name
+        FileUtil.deleteFilePath(audioFilePath)
+        audioRVAdapter.removeItem(position)
     }
 
     private fun startService() {

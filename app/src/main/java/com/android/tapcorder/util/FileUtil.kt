@@ -3,6 +3,9 @@ package com.android.tapcorder.util
 import android.annotation.SuppressLint
 import com.android.tapcorder.App
 import java.io.File
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,6 +27,15 @@ class FileUtil {
                     return fileName
                 }
                 index++
+            }
+        }
+
+        fun deleteFilePath(filePath: String) {
+            val path = Paths.get(filePath)
+            try {
+                Files.delete(path)
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
 

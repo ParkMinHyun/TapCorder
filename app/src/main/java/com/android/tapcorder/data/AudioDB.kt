@@ -40,6 +40,10 @@ abstract class AudioDB : RoomDatabase() {
             getInstance().audioDao().findByResult(audioName)
         }
 
+        fun deleteAudioData(audioData: AudioData) = runBlocking(Dispatchers.IO) {
+            getInstance().audioDao().delete(audioData)
+        }
+
         fun destroyInstance() {
             INSTANCE = null
         }
