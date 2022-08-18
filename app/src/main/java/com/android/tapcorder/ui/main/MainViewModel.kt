@@ -65,11 +65,19 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.Default) {
-            while (mediaPlayer.isPlaying && !isPauseRequested) {
-                delay(50)
-                withContext(Dispatchers.Main) {
-                    _audioPlayLiveData.value = PlayerDuration(mediaPlayer.currentPosition, mediaPlayer.duration)
-                }
+            notifyAudioProgressChanged()
+        }
+    }
+
+    private suspend fun notifyAudioProgressChanged() {
+        while (mediaPlayer.isPlaying) {
+            if (isPauseRequested || !mediaPlayer.isPlaying) {
+                return
+            }
+
+            delay(50)
+            withContext(Dispatchers.Main) {
+                _audioPlayLiveData.value = PlayerDuration(mediaPlayer.currentPosition, mediaPlayer.duration)
             }
         }
     }
@@ -96,6 +104,10 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
         mediaPlayer.seekTo(progress)
         mediaPlayer.start()
+
         isPauseRequested = false
+        viewModelScope.launch(Dispatchers.Default) {
+            notifyAudioProgressChanged()
+        }
     }
 }
