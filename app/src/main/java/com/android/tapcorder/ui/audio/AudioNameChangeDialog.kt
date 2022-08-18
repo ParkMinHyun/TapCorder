@@ -17,11 +17,13 @@ class AudioNameChangeDialog: DialogFragment() {
         _binding = FragmentAudioNameSettingBinding.inflate(LayoutInflater.from(context))
         return activity?.let {
             val builder = AlertDialog.Builder(it)
+            binding.btnOk.setOnClickListener { _ ->
+                listener?.onDialogPositiveClick(binding.name.text.toString())
+                dismiss()
+            }
+            binding.btnCancel.setOnClickListener { _-> dismiss() }
+            builder.setTitle("음성 파일 이름 변경")
             builder.setView(binding.root)
-                .setPositiveButton("확인") { _, _ ->
-                    listener?.onDialogPositiveClick(binding.name.text.toString())
-                }
-                .setNegativeButton("취소", null)
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
